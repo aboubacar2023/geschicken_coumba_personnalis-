@@ -24,17 +24,20 @@
                         <input type="text" class="form-control" wire:model="quantite" required>
                         <div class="erreur">@error('quantite') {{$message}}@enderror</div>
                     </div>
-                    <div class="col-md-12">
+                    <div class="col-md-6">
                         <label class="col-form-label">Prix Unitaire en FCFA</label>
                         <input type="text" class="form-control" wire:model="prix_unitaire" required>
                         <div class="erreur">@error('prix_unitaire') {{$message}}@enderror</div>
                     </div>
                     <div class="col-md-6">
                         <label class="col-form-label">Montant</label>
-                        <div class="form-check form-switch">
-                            <input type="checkbox" class="form-check-input" wire:click="montantFinal">
-                        </div>
                         <input type="text" class="form-control" placeholder="{{number_format($this->montant, 0, '', ' ')}} FCFA" readonly>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="col-form-label">Le montant</label>
+                      <div class="form-check form-switch">
+                          <input type="checkbox" class="form-check-input" wire:click="montantFinal">
+                      </div>
                     </div>
                 </div>
             </div>

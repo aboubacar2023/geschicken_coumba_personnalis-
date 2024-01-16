@@ -58,20 +58,13 @@
                         @foreach ($this->parties as $key => $partie)
                             <h3 class="pt-3" style="text-align: center; color:#821435">{{strtoupper($partie)}}</h3>
                             <div class="row">
-                                @if ($partie === 'attieke')
-                                    <div class="col-md-6">
-                                        <label class="col-form-label">Quantité {{$partie}}</label>
-                                        <input type="text" class="form-control" wire:model="quantite.{{$key}}" required max="{{$this->quantite_dispo[ $key]}}">
-                                    </div>
-                                @else
-                                    <div class="col-md-6">
-                                        <label class="col-form-label">Quantité {{$partie}}</label>
-                                        <input type="number" class="form-control" wire:model="quantite.{{$key}}" required max="{{$this->quantite_dispo[ $key]}}">
-                                    </div>
-                                @endif
+                                <div class="col-md-6">
+                                    <label class="col-form-label">Quantité {{$partie}}</label>
+                                    <input type="text" class="form-control" wire:model="quantite.{{$key}}" required max="{{$this->quantite_dispo[$key]}}">
+                                </div>
                                 <div class="col-md-6">
                                     <label class="col-form-label">Prix Unitaire en FCFA</label>
-                                    <input type="number" class="form-control" wire:model="prix.{{$key}}" required>
+                                    <input type="text" class="form-control" wire:model="prix.{{$key}}" required>
                                 </div>
                             </div>
                             @endforeach

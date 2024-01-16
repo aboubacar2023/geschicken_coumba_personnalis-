@@ -37,13 +37,8 @@ class IndivClient extends Component
     public $mode_paiement = '';
 
     public function saveCommande() {
-
-
-
-        // Ici 
-        // Prevoir la partie attieke , si l'utilisateur saisie pas les caracteres attendus
-
-        
+        $verif = $this->montantTotal() ;
+        if ($verif) {
         $commande = Commande::create([
             'client_id' => $this->id_client
         ]);
@@ -64,9 +59,10 @@ class IndivClient extends Component
         }
 
         return $this->redirectRoute('client.individuel', ['id_client' => $this->id_client]);
+        }
     }
 
-    // Methode pour voir les autres champs du formulaire quand on clique sur activation
+    // Methode pour voir les autres champs du formulaire quand on clique sur activation ou si les données saisies sont correctes
 
     public function remplissageChamps() {
         $this->reset('parties', 'prix', 'quantite', 'quantite_dispo');
@@ -79,8 +75,8 @@ class IndivClient extends Component
         }
     }
 
-
-    public function montantTotal() {
+    // Ceci es fait pour calculer le montant total mais egalement de referentiel de validation avant de sauvegarder la commande
+    public function montantTotal() : bool {
 
         // Maintenant attaquer la partie ou on va obliger l'itilisateur a saisir un chiffre inferieur à la quantité dans le stock
 
@@ -89,7 +85,8 @@ class IndivClient extends Component
         // verification si tous les champs sont remplis
         if (count($this->quantite) === count($this->parties) && count($this->prix) === count($this->parties)) {
             foreach($this->parties as $key => $partie){
-                if ($this->quantite[$key] > 0 && $this->prix[$key] > 0) {
+                $stock = Stock::where('type', $partie)->value('quantite_stock');
+                if ((is_numeric($this->quantite[$key]) && $this->quantite[$key] > 0 ) && ($this->quantite[$key] <= $stock) &&  (is_numeric($this->prix[$key]) && $this->prix[$key] > 0) ) {
                     $occurence++;
                 }
             }
@@ -97,11 +94,14 @@ class IndivClient extends Component
                 foreach($this->parties as $key => $partie){
                     $this->prix_total += $this->quantite[$key] * $this->prix[$key];
                 }
+                return true ;
             } else {
                 $this->message_erreur = "Revoyez vos quantités et vos prix !!!";
+                return false ;
             }
         }else{
             $this->message_erreur = "Remplissez tous les champs";
+            return false ;
         }
         
 
