@@ -16,7 +16,7 @@ class IndivClient extends Component
 
     public $activation = false ;
 
-    public $entier = false, $blanc = false, $cuisse = false, $aile = false, $carcasse = false;
+    public $entier = false, $blanc = false, $cuisse = false, $aile = false, $carcasse = false, $attieke = false;
 
     public $parties = [] ;
 
@@ -37,13 +37,20 @@ class IndivClient extends Component
     public $mode_paiement = '';
 
     public function saveCommande() {
+
+
+
+        // Ici 
+        // Prevoir la partie attieke , si l'utilisateur saisie pas les caracteres attendus
+
+        
         $commande = Commande::create([
             'client_id' => $this->id_client
         ]);
 
         foreach($this->parties as $key => $partie){
             
-            // decrementation du stock avannt l'insertion des ids de la commande et stocks dans la table intermediare
+            // decrementation du stock avant l'insertion des ids de la commande et stocks dans la table intermediare
 
             Stock::where('type', $partie)->decrement('quantite_stock', $this->quantite[$key]);
             $id_stock = Stock::where('type', $partie)->value('id');
@@ -63,7 +70,7 @@ class IndivClient extends Component
 
     public function remplissageChamps() {
         $this->reset('parties', 'prix', 'quantite', 'quantite_dispo');
-        $composants = ['entier', 'blanc', 'cuisse', 'aile', 'carcasse'];
+        $composants = ['entier', 'blanc', 'cuisse', 'aile', 'carcasse', 'attieke'];
         foreach($composants as $composant){
             if ($this->{$composant}) {
                 array_push($this->quantite_dispo, Stock::where('type', $composant)->value('quantite_stock'));

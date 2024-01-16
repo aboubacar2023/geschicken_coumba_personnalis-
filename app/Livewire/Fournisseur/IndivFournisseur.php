@@ -21,6 +21,9 @@ class IndivFournisseur extends Component
     #[Validate('required', message: 'Veuillez remplir le champ')]
     #[Validate('numeric', message: 'Veuillez saisir des chiffres')]
     public $prix_unitaire = '';
+    
+    #[Validate('required')]
+    public $type_depot = '';
 
     public $reglement_effectif = '';
 
@@ -29,6 +32,7 @@ class IndivFournisseur extends Component
     public $mode_paiement = '';
 
     public $montant_insuffisant = '';
+
 
     private function createStock() {
         if ( Stock::all()->isEmpty()) {
@@ -53,6 +57,10 @@ class IndivFournisseur extends Component
                     'type' => 'carcasse',
                     'quantite_stock' => 0
                 ],
+                [
+                    'type' => 'attieke',
+                    'quantite_stock' => 0
+                ],
             ]);
         }
     }
@@ -62,15 +70,22 @@ class IndivFournisseur extends Component
         $this->createStock();
 
         $validated = $this->validate();
+
         Reception::create([
             'quantite' => $validated['quantite'],
             'prix_unitaire' => $validated['prix_unitaire'],
+            'type_produit' => $validated['type_depot'],
             'montant' => $validated['quantite'] * $validated['prix_unitaire'],
             'fournisseur_id' => $this->id_fournisseur
         ]); 
 
+        if ($validated['type_depot'] === 'poulet') {
+            Stock::where('type', 'entier')->increment('quantite_stock', $validated['quantite']);
+        } else {
+            Stock::where('type', 'attieke')->increment('quantite_stock', $validated['quantite']);
+        }
+        
 
-        Stock::where('type', 'entier')->increment('quantite_stock', $validated['quantite']);
 
         return $this->redirectRoute('fournisseur.individuel', ['fournisseur_id' => $this->id_fournisseur]);
     }

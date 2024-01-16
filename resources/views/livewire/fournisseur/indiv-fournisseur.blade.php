@@ -25,6 +25,7 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Date Reception</th>
+                                <th>Produit</th>
                                 <th>Quantité</th>
                                 <th>Prix Unitaire</th>
                                 <th>Montant</th>
@@ -40,6 +41,7 @@
                                         $reception_date = new DateTime($reception->created_at)
                                     @endphp
                                     <td>{{$reception_date->format('m-d-Y')}}</td>
+                                    <td>{{ucfirst($reception->type_produit)}}</td>
                                     <td>{{$reception->quantite}} KG</td>
                                     <td>{{number_format($reception->prix_unitaire, 0, '', ' ')}} FCFA</td>
                                     <td>{{number_format($reception->montant, 0, '', ' ')}} FCFA</td>

@@ -14,31 +14,37 @@
                         <div class="col">
                             <label class="col-form-label">Entier</label>
                             <div class="form-check form-switch">
-                                <input type="checkbox" class="form-check-input" wire:model.live="entier">
+                                <input type="checkbox" class="form-check-input" wire:model.lazy="entier">
                             </div>
                         </div>
                         <div class="col">
                             <label class="col-form-label">Blanc</label>
                             <div class="form-check form-switch">
-                                <input type="checkbox" class="form-check-input" wire:model.live="blanc">
+                                <input type="checkbox" class="form-check-input" wire:model.lazy="blanc">
                             </div>
                         </div>
                         <div class="col">
                             <label class="col-form-label">Cuisse</label>
                             <div class="form-check form-switch">
-                                <input type="checkbox" class="form-check-input" wire:model.live="cuisse">
+                                <input type="checkbox" class="form-check-input" wire:model.lazy="cuisse">
                             </div>
                         </div>
                         <div class="col">
                             <label class="col-form-label">Aile</label>
                             <div class="form-check form-switch">
-                                <input type="checkbox" class="form-check-input" wire:model.live="aile">
+                                <input type="checkbox" class="form-check-input" wire:model.lazy="aile">
                             </div>
                         </div>
                         <div class="col">
                             <label class="col-form-label">Carcasse</label>
                             <div class="form-check form-switch">
-                                <input type="checkbox" class="form-check-input" wire:model.live="carcasse">
+                                <input type="checkbox" class="form-check-input" wire:model.lazy="carcasse">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <label class="col-form-label">Attiéké</label>
+                            <div class="form-check form-switch">
+                                <input type="checkbox" class="form-check-input" wire:model.lazy="attieke">
                             </div>
                         </div>
                     </div>
@@ -52,10 +58,17 @@
                         @foreach ($this->parties as $key => $partie)
                             <h3 class="pt-3" style="text-align: center; color:#821435">{{strtoupper($partie)}}</h3>
                             <div class="row">
-                                <div class="col-md-6">
-                                    <label class="col-form-label">Quantité {{$partie}}</label>
-                                    <input type="number" class="form-control" wire:model="quantite.{{$key}}" required max="{{$this->quantite_dispo[ $key]}}">
-                                </div>
+                                @if ($partie === 'attieke')
+                                    <div class="col-md-6">
+                                        <label class="col-form-label">Quantité {{$partie}}</label>
+                                        <input type="text" class="form-control" wire:model="quantite.{{$key}}" required max="{{$this->quantite_dispo[ $key]}}">
+                                    </div>
+                                @else
+                                    <div class="col-md-6">
+                                        <label class="col-form-label">Quantité {{$partie}}</label>
+                                        <input type="number" class="form-control" wire:model="quantite.{{$key}}" required max="{{$this->quantite_dispo[ $key]}}">
+                                    </div>
+                                @endif
                                 <div class="col-md-6">
                                     <label class="col-form-label">Prix Unitaire en FCFA</label>
                                     <input type="number" class="form-control" wire:model="prix.{{$key}}" required>

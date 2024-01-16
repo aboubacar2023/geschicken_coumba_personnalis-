@@ -13,6 +13,7 @@ class Reception extends Model
         'quantite',
         'prix_unitaire',
         'montant',
+        'type_produit',
         'reglement',
         'date_reglement',
         'fournisseur_id'

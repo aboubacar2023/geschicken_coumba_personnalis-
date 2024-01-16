@@ -12,11 +12,19 @@
             <h3 class="entete_bilan">Renseignez les champs suivants :</h3>
                 <div class="row">
                     <div class="col-md-6">
+                      <label  class="col-form-label">Type Produit</label>
+                      <select class="form-select" aria-label="Default select example" wire:model="type_depot" required>
+                        <option value=""></option>
+                        <option value="poulet">Poulet</option>
+                        <option value="attieke">Attiéké</option>
+                      </select>
+                    </div>
+                    <div class="col-md-6">
                         <label class="col-form-label">Quantité en KG</label>
                         <input type="text" class="form-control" wire:model="quantite" required>
                         <div class="erreur">@error('quantite') {{$message}}@enderror</div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <label class="col-form-label">Prix Unitaire en FCFA</label>
                         <input type="text" class="form-control" wire:model="prix_unitaire" required>
                         <div class="erreur">@error('prix_unitaire') {{$message}}@enderror</div>
