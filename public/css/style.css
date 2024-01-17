@@ -306,3 +306,12 @@ label{
     padding-top: 3px;
     padding-bottom: 5px;
 }
+.td_client{
+    margin-top: 5px;
+    height: 30px;
+    width: 60px;
+}
+.td_fournisseur{
+    height: 30px;
+    width: 60px;
+}

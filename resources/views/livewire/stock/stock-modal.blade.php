@@ -13,30 +13,35 @@
             @if ($this->message_erreur)
                 <h4 style="text-align: center; color:#821435">{{$this->message_erreur}}</h4>
             @endif
-            <div class="row">
+            <div class="row"> 
                 <div class="col-md-6">
                     <label class="col-form-label">Quantité Entier Disponible</label>
-                    <input type="text" class="form-control" placeholder="{{$quantite_dispo}}" readonly>
+                    <input type="text" class="form-control" placeholder="{{number_format($quantite_dispo,2)}}" readonly>
                 </div>
                 <div class="col-md-6">
                     <label class="col-form-label">Quantité Entier</label>
-                    <input type="number" class="form-control" wire:model="entier" required min="1">
+                    <input type="text" class="form-control" wire:model="entier" required>
+                    <div class="erreur">@error('entier') {{$message}}@enderror</div>
                 </div>
                 <div class="col-md-6">
                     <label class="col-form-label">Blanc</label>
-                    <input type="number" class="form-control" wire:model="blanc" required min="1">
+                    <input type="text" class="form-control" wire:model="blanc" required>
+                    <div class="erreur">@error('blanc') {{$message}}@enderror</div>
                 </div>
                 <div class="col-md-6">
                     <label class="col-form-label">Cuisse</label>
-                    <input type="number" class="form-control" wire:model="cuisse" required min="1">
+                    <input type="text" class="form-control" wire:model="cuisse" required>
+                    <div class="erreur">@error('cuisse') {{$message}}@enderror</div>
                 </div>
                 <div class="col-md-6">
                     <label class="col-form-label">Aile</label>
-                    <input type="number" class="form-control" wire:model="aile" required min="1">
+                    <input type="text" class="form-control" wire:model="aile" required>
+                    <div class="erreur">@error('aile') {{$message}}@enderror</div>
                 </div>
                 <div class="col-md-6">
                     <label class="col-form-label">Carcasse</label>
-                    <input type="number" class="form-control" wire:model="carcasse" required min="1">
+                    <input type="text" class="form-control" wire:model="carcasse" required>
+                    <div class="erreur">@error('carcasse') {{$message}}@enderror</div>
                 </div>
             </div>
         </div>
@@ -87,7 +92,8 @@
               </div>
               <div class="col-md-4">
                   <label class="col-form-label">Quantité</label>
-                  <input type="text" class="form-control" wire:model="quantite" required min="1">
+                  <input type="text" class="form-control" wire:model="quantite" required>
+                  <div class="erreur">@error('quantite') {{$message}}@enderror</div>
               </div>
           </div>
       </div>

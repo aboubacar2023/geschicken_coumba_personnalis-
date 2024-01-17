@@ -34,8 +34,8 @@
                                     <td>{{$fournisseur->prenom}}</td>
                                     <td>{{$fournisseur->nom}}</td>
                                     <td>{{$fournisseur->societe}}</td>
-                                    <td>{{$fournisseur->contact}}</td>
                                     <td>{{$fournisseur->adresse}}</td>
+                                    <td>{{$fournisseur->contact}}</td>
                                     <td>
                                         <button type="button" wire:click="updateFournisseur({{$fournisseur->id}})" class="btn btn-warning" style="color: white;" data-bs-toggle="modal" data-bs-target="#modificationModal" data-bs-whatever="@mdo"><i class="fa-solid fa-pen-nib"></i></button>
                                         <button type="submit" class="btn" style="background-color: #821435; color: white;"><a href="{{route('fournisseur.individuel', ['fournisseur_id' => $fournisseur->id])}}"><i class="fa-solid fa-eye"></i></a></button>

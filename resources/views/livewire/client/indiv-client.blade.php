@@ -28,42 +28,39 @@
                                 <th>Date Commande</th>
                                 <th>Montant Total</th>
                                 <th>Date Règlement</th>
-                                <th>Statut</th>
                                 <th>Action</th>
+                                <th>Statut</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($datas as $data)
                                 <tr wire:key="{{$data[0]}}">
-                                    <td>{{$data[0]}}</td>
+                                    <td>{{$data[1]}}</td>
                                     @php
-                                        $new_format = new DateTime($data[2]);
+                                        $new_format = new DateTime($data[3]);
                                     @endphp
                                     <td>{{$new_format->format('d-m-Y')}}</td>
-                                    <td>{{number_format($data[3], 0, '', ' ')}} FCFA</td>
-                                    @if ($data[1])
+                                    <td>{{number_format($data[4], 0, '', ' ')}} FCFA</td>
+                                    @if ($data[2])
                                         @php
-                                            $format = new DateTime($data[1])
+                                            $format = new DateTime($data[2])
                                         @endphp
                                         <td>{{$format->format('d-m-Y')}}</td>
                                     @else
                                         <td>---</td>
                                     @endif
                                     <td>
-                                        @if ($data[1])
-                                           Réglé  
-                                        @else
-                                            Non réglé
-                                        @endif
-                                    </td>
-                                    <td>
                                         <button type="button" wire:click="seeCommandeIndiv({{$data[0]}})" class="btn btn-warning" style="color: white;" data-bs-toggle="modal" data-bs-target="#seeCommandeModal" data-bs-whatever="@mdo"><i class="fa-solid fa-eye"></i></button>
                                     </td>
+                                    @if ($data[2])
+                                        <td><button class="btn td_client" style="background-color: green"></button></td>  
+                                    @else
+                                    <td><button class="btn td_client" style="background-color: red"></button></td>
+                                    @endif
                                 </tr>
                             @endforeach
                         </tbody>
                     </table> 
-                     {{-- {{ $clients->links() --}} 
                 </div>
             </div>
         </div>

@@ -24,6 +24,9 @@ class IndivFournisseur extends Component
     
     #[Validate('required')]
     public $type_depot = '';
+    
+    #[Validate('required')]
+    public $id_reception = '';
 
     public $reglement_effectif = '';
 
@@ -72,6 +75,7 @@ class IndivFournisseur extends Component
         $validated = $this->validate();
 
         Reception::create([
+            'id_reception' => $validated['id_reception'],
             'quantite' => $validated['quantite'],
             'prix_unitaire' => $validated['prix_unitaire'],
             'type_produit' => $validated['type_depot'],

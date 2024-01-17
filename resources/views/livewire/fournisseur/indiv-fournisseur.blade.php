@@ -36,7 +36,7 @@
                         <tbody>
                             @foreach ($receptions as $reception)
                                 <tr wire:key="{{$reception->id}}">
-                                    <td>{{$reception->id}}</td>
+                                    <td>{{$reception->id_reception}}</td>
                                     @php
                                         $reception_date = new DateTime($reception->created_at)
                                     @endphp
@@ -53,13 +53,11 @@
                                     @else
                                         <td>---</td>
                                     @endif
-                                    <td>
-                                        @if ($reception->reglement)
-                                            Réglé
-                                        @else
-                                            Non réglé
-                                        @endif
-                                    </td>
+                                    @if ($reception->reglement)
+                                        <td><button class="btn td_fournisseur" style="background-color: green"></button></td> 
+                                    @else
+                                        <td><button class="btn td_fournisseur" style="background-color: red"></button></td> 
+                                    @endif
                                 </tr>
                             @endforeach
                         </tbody>

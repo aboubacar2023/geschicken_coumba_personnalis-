@@ -34,8 +34,8 @@
                                     <td>{{$client->prenom}}</td>
                                     <td>{{$client->nom}}</td>
                                     <td>{{$client->societe}}</td>
-                                    <td>{{$client->contact}}</td>
                                     <td>{{$client->adresse}}</td>
+                                    <td>{{$client->contact}}</td>
                                     <td>
                                         @if ($client->nom !== 'DIVERS')
                                             <button type="button" wire:click="updateClient({{$client->id}})" class="btn btn-warning" style="color: white;" data-bs-toggle="modal" data-bs-target="#modificationModal" data-bs-whatever="@mdo"><i class="fa-solid fa-pen-nib"></i></button>

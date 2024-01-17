@@ -55,6 +55,10 @@
                     </div>
                     @if(!empty($this->parties) && $this->activation)
                         <h3 class="entete_bilan mt-4">Renseignez les champs suivants : </h3>
+                        <div class="col-md-6">
+                            <label class="col-form-label">ID commande</label>
+                            <input type="text" class="form-control" wire:model="id_identifiant_commande" required>
+                        </div>
                         @foreach ($this->parties as $key => $partie)
                             <h3 class="pt-3" style="text-align: center; color:#821435">{{strtoupper($partie)}}</h3>
                             <div class="row">
@@ -75,7 +79,7 @@
                             <div class="form-check form-switch">
                                 <input type="checkbox" class="form-check-input" wire:click="montantTotal">
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-6">
                                 <input type="text" class="form-control" placeholder="{{number_format($this->prix_total, 0, '', ' ')}} FCFA" readonly>
                             </div>
                     @endif
@@ -155,7 +159,7 @@
                             <select class="form-select" aria-label="Default select example" wire:model="reglement_effectif" required>
                               <option value=""></option>
                               @foreach ($reglements as $reglement)
-                                <option value="{{$reglement[0]}}">Facture N°{{$reglement[0]}} -- Montant Total : {{number_format($reglement[3], 0, '', ' ')}} FCFA</option>
+                                <option value="{{$reglement[0]}}">Facture N°{{$reglement[1]}} -- Montant Total : {{number_format($reglement[4], 0, '', ' ')}} FCFA</option>
                               @endforeach
                             </select>
                         </div> 

@@ -12,6 +12,7 @@ class Commande extends Model
     use HasFactory;
     protected $fillable = [
         'id',
+        'id_commande',
         'client_id'
     ];
 

@@ -30,15 +30,23 @@
                         <div class="erreur">@error('prix_unitaire') {{$message}}@enderror</div>
                     </div>
                     <div class="col-md-6">
-                        <label class="col-form-label">Montant</label>
-                        <input type="text" class="form-control" placeholder="{{number_format($this->montant, 0, '', ' ')}} FCFA" readonly>
+                      <label class="col-form-label">ID reception</label>
+                      <input type="text" class="form-control" wire:model="id_reception" required>
+                      <div class="erreur">@error('id_reception') {{$message}}@enderror</div>
                     </div>
                     <div class="col-md-6">
+                        <label class="col-form-label">Montant</label>
+                        <div class="form-check form-switch">
+                          <input type="checkbox" class="form-check-input" wire:click="montantFinal">
+                        </div>
+                        <input type="text" class="form-control" placeholder="{{number_format($this->montant, 0, '', ' ')}} FCFA" readonly>
+                    </div>
+                    {{-- <div class="col-md-6">
                       <label class="col-form-label">Le montant</label>
                       <div class="form-check form-switch">
                           <input type="checkbox" class="form-check-input" wire:click="montantFinal">
                       </div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
       </div>
@@ -74,7 +82,7 @@
                         <select class="form-select" aria-label="Default select example" wire:model="reglement_effectif" required>
                           <option value=""></option>
                           @foreach ($reglements as $reglement)
-                            <option value="{{$reglement->id}}">Reception N°{{$reglement->id}} -- Montant Total : {{number_format($reglement->montant, 0, '', ' ')}} FCFA</option>
+                            <option value="{{$reglement->id}}">Reception N°{{$reglement->id_reception}} -- Montant Total : {{number_format($reglement->montant, 0, '', ' ')}} FCFA</option>
                           @endforeach
                         </select>
                     </div>

@@ -7,7 +7,7 @@ use App\Models\Operation;
 use DateTime;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
-
+ 
 class Journaliere extends Component
 {
     #[Validate('numeric', message: 'Veuillez Saisir des chiffres')]

@@ -9,19 +9,24 @@ use Livewire\Component;
 
 class Stock extends Component
 {
-    #[Validate('required|numeric')]
+    #[Validate('required')]
+    #[Validate('numeric', message : "Veuillez saisir des chiffres")]
     public $entier;
 
-    #[Validate('required|numeric')]
+    #[Validate('required')]
+     #[Validate('numeric', message : "Veuillez saisir des chiffres")]
     public $blanc;
 
-    #[Validate('required|numeric')]
+    #[Validate('required')]
+     #[Validate('numeric', message : "Veuillez saisir des chiffres")]
     public $cuisse;
 
-    #[Validate('required|numeric')]
+    #[Validate('required')]
+     #[Validate('numeric', message : "Veuillez saisir des chiffres")]
     public $aile;
 
-    #[Validate('required|numeric')]
+    #[Validate('required')]
+     #[Validate('numeric', message : "Veuillez saisir des chiffres")]
     public $carcasse;
 
     public $quantite_dispo;
@@ -35,7 +40,9 @@ class Stock extends Component
 
     public function saveAvarie(){
         $validated = $this->validate([
-            'quantite' => 'required|numeric'
+            'quantite' => 'required|numeric', 
+        ], [
+            'quantite.numeric' => "Veuillez saisir des chiffres"
         ]);
         if (ModelsStock::where('id', $this->produit_avarie)->value('quantite_stock') >= $this->quantite) {
 

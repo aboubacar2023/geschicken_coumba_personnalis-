@@ -28,7 +28,7 @@
                                 <tr wire:key="{{$stock->id}}">
                                     <td>{{strtoupper($stock->id)}}</td>
                                     <td>{{strtoupper($stock->type)}}</td>
-                                    <td>{{$stock->quantite_stock}} KG</td>
+                                    <td>{{number_format($stock->quantite_stock, 2)}} KG</td>
                                 </tr>
                             @endforeach
                         </tbody>

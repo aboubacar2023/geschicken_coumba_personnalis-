@@ -14,6 +14,7 @@ return new class extends Migration
     {
         Schema::create('receptions', function (Blueprint $table) {
             $table->id();
+            $table->string('id_reception');
             $table->double('quantite');
             $table->integer('prix_unitaire');
             $table->integer('montant');

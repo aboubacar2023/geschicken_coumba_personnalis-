@@ -13,7 +13,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <label class="col-form-label">Précisez le montant</label>
-                        <input type="number" class="form-control" wire:model="montant" required min="100"
+                        <input type="text" class="form-control" wire:model="montant" required
                         @if ($this->mode_paiement === 'espece')
                             max = "{{$argent['caisse']}}"
                         @else
@@ -71,7 +71,8 @@
               <div class="row">
                   <div class="col-md-6">
                       <label class="col-form-label">Précisez le montant</label>
-                      <input type="number" class="form-control" wire:model="montant" required min="100">
+                      <input type="text" class="form-control" wire:model="montant" required>
+                      <div class="erreur">@error('montant') {{$message}}@enderror</div>
                   </div>
                   <div class="col-md-6">
                       <label  class="col-form-label">Compte</label>

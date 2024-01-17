@@ -30,6 +30,9 @@ class IndivClient extends Component
 
     public $message_erreur = '';
 
+    // Ceci est l'id manuelle qu'on saisira
+    public $id_identifiant_commande = '';
+
     public $id_commande_en_cours = '';
 
     public $reglement_effectif = '';
@@ -40,21 +43,30 @@ class IndivClient extends Component
         $verif = $this->montantTotal() ;
         if ($verif) {
         $commande = Commande::create([
+            'id_commande' => $this->id_identifiant_commande,
             'client_id' => $this->id_client
         ]);
 
         foreach($this->parties as $key => $partie){
             
             // decrementation du stock avant l'insertion des ids de la commande et stocks dans la table intermediare
-
             Stock::where('type', $partie)->decrement('quantite_stock', $this->quantite[$key]);
             $id_stock = Stock::where('type', $partie)->value('id');
             $stock = Stock::find($id_stock);
-            $stock->commandes()->attach($commande->id, [
-                'quantite_type' => $this->quantite[$key],
-                'prix_unitaire_type' => $this->prix[$key],
-                'montant_type' => $this->quantite[$key] * $this->prix[$key]
-            ]);
+            if ($partie === 'attieke') {
+                $stock->commandes()->attach($commande->id, [
+                    'quantite_type' => $this->quantite[$key],
+                    'prix_unitaire_type' => $this->prix[$key],
+                    'montant_type' => $this->quantite[$key] * $this->prix[$key]
+                ]);
+            } else {
+                $stock->commandes()->attach($commande->id, [
+                    'quantite_type' => $this->quantite[$key],
+                    'prix_unitaire_type' => $this->prix[$key],
+                    'montant_type' => intval($this->quantite[$key]) * $this->prix[$key]
+                ]);
+            }
+            
 
         }
 
@@ -85,14 +97,27 @@ class IndivClient extends Component
         // verification si tous les champs sont remplis
         if (count($this->quantite) === count($this->parties) && count($this->prix) === count($this->parties)) {
             foreach($this->parties as $key => $partie){
+
+                // Verification si le nombre saisie est un chiffre et qu'il est inferieur au stock auquel il correspond
+
                 $stock = Stock::where('type', $partie)->value('quantite_stock');
                 if ((is_numeric($this->quantite[$key]) && $this->quantite[$key] > 0 ) && ($this->quantite[$key] <= $stock) &&  (is_numeric($this->prix[$key]) && $this->prix[$key] > 0) ) {
                     $occurence++;
                 }
             }
+            // le de $occurence doit etre egal au nombre du tableau
+
             if ($occurence === count($this->parties)) {
                 foreach($this->parties as $key => $partie){
-                    $this->prix_total += $this->quantite[$key] * $this->prix[$key];
+
+                    // seul attieke prendra en compte les chiffres après virgule
+
+                   if ($partie === 'attieke') {
+                        $this->prix_total += $this->quantite[$key] * $this->prix[$key];
+                   } else {
+                       $this->prix_total += intval($this->quantite[$key]) * $this->prix[$key];
+                   }
+                   
                 }
                 return true ;
             } else {
@@ -152,6 +177,9 @@ class IndivClient extends Component
             $donne = [] ;
             foreach($operation as $key => $item){ 
                 if ($key === 'id') {
+                    array_push($donne, $item);
+                }
+                if ($key === 'id_commande') {
                     array_push($donne, $item);
                 }
                 if ($key === 'created_at') {

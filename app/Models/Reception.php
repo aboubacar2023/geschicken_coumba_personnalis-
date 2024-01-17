@@ -10,6 +10,7 @@ class Reception extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'id_reception',
         'quantite',
         'prix_unitaire',
         'montant',
