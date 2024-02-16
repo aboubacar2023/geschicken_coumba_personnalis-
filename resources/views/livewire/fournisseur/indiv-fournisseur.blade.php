@@ -29,6 +29,7 @@
                                 <th>Quantité</th>
                                 <th>Prix Unitaire</th>
                                 <th>Montant</th>
+                                <th>Reste Paiement</th>
                                 <th>Date Règlement</th>
                                 <th>Statut</th>
                             </tr>
@@ -45,6 +46,7 @@
                                     <td>{{$reception->quantite}} KG</td>
                                     <td>{{number_format($reception->prix_unitaire, 0, '', ' ')}} FCFA</td>
                                     <td>{{number_format($reception->montant, 0, '', ' ')}} FCFA</td>
+                                    <td>{{number_format($reception->montant_non_regle, 0, '', ' ')}} FCFA</td>
                                     @if ($reception->date_reglement)
                                         @php
                                             $reglement_date = new DateTime($reception->date_reglement)

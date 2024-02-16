@@ -150,7 +150,7 @@ class Caisse extends Component
         $ventes = Commande::with('stocks')->whereNotNull('date_reglement')->get()->toArray();
         $ventes = $this->recuperationSomme($ventes);
 
-        $dette_fournisseurs = Reception::where('reglement', false)->sum('montant');
+        $dette_fournisseurs = Reception::where('reglement', false)->sum('montant_non_regle');
 
         // recuperation des années et mois depuis l'appli 
         $this->year = Commande::selectRaw('YEAR(created_at) as year')->distinct()->whereNotNull('date_reglement')->get();

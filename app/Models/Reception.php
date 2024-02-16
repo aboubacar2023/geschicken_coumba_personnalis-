@@ -17,6 +17,7 @@ class Reception extends Model
         'type_produit',
         'reglement',
         'date_reception',
+        'montant_non_regle',
         'date_reglement',
         'fournisseur_id'
     ];

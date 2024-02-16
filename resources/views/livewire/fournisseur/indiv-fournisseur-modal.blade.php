@@ -76,7 +76,7 @@
               @endif
                 <div class="row">
                     <div class="col-md-6">
-                      <label  class="col-form-label">Type Payement</label>
+                      <label  class="col-form-label">Type Paiement</label>
                       <select class="form-select" aria-label="Default select example" wire:model.lazy="type_paiement" required>
                         <option value=""></option>
                         <option value="somme">Somme</option>
@@ -87,7 +87,7 @@
                         <div class="col-md-6">
                             <label class="col-form-label">Montant</label>
                             <input type="text" class="form-control" wire:model="montant_paye" required>
-                            <div>@error('montant_paye') {{$message}} @enderror</div>
+                            <div style="color: #821435;">@error('montant_paye') {{$message}} @enderror</div>
                         </div>
                     @elseif ($type_paiement === 'regelement_facture')
                       <div class="col-md-6">
@@ -95,10 +95,11 @@
                           <select class="form-select" aria-label="Default select example" wire:model="reglement_effectif" required>
                             <option value=""></option>
                             @foreach ($reglements as $reglement)
-                              <option value="{{$reglement->id}}">Reception N°{{$reglement->id_reception}} -- Montant Total : {{number_format($reglement->montant, 0, '', ' ')}} FCFA</option>
+                              <option value="{{$reglement->id}}">Reception N°{{$reglement->id_reception}} -- Montant Total : {{number_format($reglement->montant_non_regle, 0, '', ' ')}} FCFA</option>
                             @endforeach
                           </select>
                       </div>
+                      @endif
                       <div class="col-md-6">
                         <label  class="col-form-label">Mode de Paiement</label>
                         <select class="form-select" aria-label="Default select example" wire:model="mode_paiement" required>
@@ -106,8 +107,7 @@
                           <option value="espece">Espèce</option>
                           <option value="banque">Banque</option>
                         </select>
-                    </div>
-                    @endif
+                      </div>
                 </div>
             </div>
       </div>

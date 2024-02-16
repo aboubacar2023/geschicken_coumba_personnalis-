@@ -7,6 +7,7 @@ use App\Models\Fournisseur;
 use App\Models\Operation;
 use App\Models\Reception;
 use App\Models\Stock;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
@@ -48,6 +49,12 @@ class IndivFournisseur extends Component
     public function rules() {
         return [
             'montant_paye' => $this->type_paiement === 'somme' ? 'required|numeric|gt:1' : '',
+        ];
+    }
+    public function messages() {
+        return [
+            'montant_paye.gt' => "Veuillez Saisir un chiffre superieur à 0",
+            'montant_paye.numeric' => "Veuillez Saisir des Chiffres",
         ];
     }
 
@@ -97,6 +104,7 @@ class IndivFournisseur extends Component
                 'type_produit' => $validated['type_depot'],
                 'date_reception' => $validated['date_reception'],
                 'montant' => intval($validated['quantite']) * $validated['prix_unitaire'],
+                'montant_non_regle' => intval($validated['quantite']) * $validated['prix_unitaire'],
                 'fournisseur_id' => $this->id_fournisseur
             ]); 
         } else {
@@ -107,6 +115,7 @@ class IndivFournisseur extends Component
                 'type_produit' => $validated['type_depot'],
                 'date_reception' => $validated['date_reception'],
                 'montant' => $validated['quantite'] * $validated['prix_unitaire'],
+                'montant_non_regle' => intval($validated['quantite']) * $validated['prix_unitaire'],
                 'fournisseur_id' => $this->id_fournisseur
             ]); 
         }
@@ -139,28 +148,95 @@ class IndivFournisseur extends Component
         $this->reset('quantite', 'prix_unitaire', 'montant');
     }
 
+    // Methode qu'on va appeler quand la personne voudra plutot deposer une somme
+    private function decrementationSoldeGlobal($type, $somme)
+    {
+        if ($type === "espece") {
+            $type_caisse = "somme_caisse";
+        } else {
+            $type_caisse = "somme_banque";
+        }
+        
+        $factures = DB::table('fournisseurs')->where('fournisseurs.id', $this->id_fournisseur)
+        ->join('receptions', 'fournisseurs.id', '=', 'receptions.fournisseur_id')
+        ->where('reglement', false)
+        ->orderByDesc('date_reception')
+        ->select('receptions.id', 'montant_non_regle')
+        ->get();
+
+        // verification si la somme qu'on veut regler est disponible en caisse
+        $somme_restant = Caisse::where('type_caisse', $type_caisse)->value('somme_type');
+        $id_caisse = Caisse::where('type_caisse', $type_caisse)->value('id');
+
+        if ($somme <= $somme_restant) {
+            // Dans les operations du jour, mettre uniquement la somme total payé au fournisseur et les informations
+            Operation::create([
+                'type_operation' => 'Règlement Fournisseur',
+                'montant_operation' => $somme,
+                'caisse_id' => $id_caisse,
+            ]);
+            // On n'oublie pas de decrementer le type de caisse
+            Caisse::where('type_caisse', $type_caisse)->decrement('somme_type', $somme);
+            // il fera le tour pour regler d'une maniere chaque fature tant que la somme deposer soit egale à 0
+
+            foreach($factures  as $facture){
+                // si la somme recu en parametre est égale à 0, on arrete tout
+                if ($somme > 0) {
+
+                    // si la somme en cours est superieur ou égale à une dette d'un facture, alors on peut solder cette facture
+                    if ($somme >= $facture->montant_non_regle) {
+                        Reception::where('id', $facture->id)->update([
+                            'reglement' => true,
+                            'montant_non_regle' => 0,
+                            // Revoir ici car c'est à Gogo de saisir la date de paiement
+                            'date_reglement' => now()
+                        ]);
+                    } else {
+                        Reception::where('id', $facture->id)->decrement('montant_non_regle', $somme);
+                    }
+                    $somme -= $facture->montant_non_regle;
+                    
+                }else {
+                    break ;
+                }
+            }
+            return $this->redirectRoute('fournisseur.individuel', ['fournisseur_id' => $this->id_fournisseur]);
+        } else {
+            $this->montant_insuffisant = 'La somme disponible est insuffisante pour régler ce fournisseur !!!';
+        }
+        
+    }
+
     public function saveReglement() {
-        $this->validate();
 
-        if ($this->mode_paiement === 'espece') {
+        // Verification si on veut regler une facture ou deposer une somme
+        if ($this->type_paiement === "regelement_facture") {
 
-            $montant = Reception::where('id', $this->reglement_effectif)->value('montant');
-            $somme_restant = Caisse::where('type_caisse', 'somme_caisse')->value('somme_type');
+            // Ici on determine le mode de paeiment avant la suite
+            if ($this->mode_paiement === "espece") {
+                $type_caisse = "somme_caisse";
+            } else {
+                $type_caisse = "somme_banque";
+            }
+
+            $montant = Reception::where('id', $this->reglement_effectif)->value('montant_non_regle');
+            $somme_restant = Caisse::where('type_caisse', $type_caisse)->value('somme_type');
 
             // verification si la somme qu'on veut regler est disponible en caisse
 
             if ($montant <= $somme_restant) {
-                $id_caisse = Caisse::where('type_caisse', 'somme_caisse')->value('id');
+                $id_caisse = Caisse::where('type_caisse', $type_caisse)->value('id');
                 Operation::create([
                     'type_operation' => 'Règlement Fournisseur',
                     'montant_operation' => $montant,
                     'caisse_id' => $id_caisse,
                 ]);
     
-                Caisse::where('type_caisse', 'somme_caisse')->decrement('somme_type', $montant);
+                Caisse::where('type_caisse', $type_caisse)->decrement('somme_type', $montant);
         
                 Reception::where('id', $this->reglement_effectif)->update([
                     'reglement' => true,
+                    'montant_non_regle' => 0,
                     'date_reglement' => now()
                 ]);
                 return $this->redirectRoute('fournisseur.individuel', ['fournisseur_id' => $this->id_fournisseur]);
@@ -168,34 +244,10 @@ class IndivFournisseur extends Component
                 $this->montant_insuffisant = 'La somme disponible est insuffisante pour régler ce fournisseur !!!';
             }
             
-
         } else {
-
-            $montant = Reception::where('id', $this->reglement_effectif)->value('montant');
-            $somme_restant = Caisse::where('type_caisse', 'somme_banque')->value('somme_type');
-
-            // verification si la somme qu'on veut regler est disponible à la banque
-            if ($montant <= $somme_restant) {
-
-                $montant = Reception::where('id', $this->reglement_effectif)->value('montant');
-                $id_caisse = Caisse::where('type_caisse', 'somme_banque')->value('id');
-                Operation::create([
-                    'type_operation' => 'Règlement Fournisseur',
-                    'montant_operation' => $montant,
-                    'caisse_id' => $id_caisse,
-                ]);
-                Caisse::where('type_caisse', 'somme_banque')->decrement('somme_type', $montant);
-        
-                Reception::where('id', $this->reglement_effectif)->update([
-                    'reglement' => true,
-                    'date_reglement' => now()
-                ]);
-                return $this->redirectRoute('fournisseur.individuel', ['fournisseur_id' => $this->id_fournisseur]);
-            } else {
-                $this->montant_insuffisant = 'La somme disponible est insuffisante pour régler ce fournisseur !!!';
-            }
-            
+            $this->decrementationSoldeGlobal($this->mode_paiement, $this->montant_paye);
         }
+        
         
     }
 
@@ -208,10 +260,11 @@ class IndivFournisseur extends Component
 
         $solde = Reception::where('fournisseur_id', $this->id_fournisseur)
         ->where('reglement', false)
-        ->sum('montant');
+        ->sum('montant_non_regle');
 
         $reglements = Reception::where('fournisseur_id', $this->id_fournisseur)
         ->where('reglement', false)
+        ->select('id', 'id_reception', 'montant_non_regle')
         ->get();
 
         return view('livewire.fournisseur.indiv-fournisseur', [

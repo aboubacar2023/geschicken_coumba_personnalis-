@@ -18,6 +18,7 @@ return new class extends Migration
             $table->double('quantite');
             $table->integer('prix_unitaire');
             $table->integer('montant');
+            $table->integer('montant_non_regle');
             $table->string('type_produit');
             $table->date('date_reception');
             $table->boolean('reglement')->default(false);
