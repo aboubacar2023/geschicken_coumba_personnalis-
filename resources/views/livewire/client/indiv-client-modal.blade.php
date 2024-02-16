@@ -105,8 +105,8 @@
         </div>
         <div class="modal-body">
             <div class="container-fluid">
-                <h3 class="entete_bilan">Les informations sur la commande N°{{$this->id_commande_en_cours}} </h3>
-                <div class="row">
+                <h3 class="entete_bilan">Les informations sur la commande</h3>
+                <div class="row"> 
                     <table class="table table-striped table-bordered" >
                         <thead>
                             <tr>

@@ -74,14 +74,26 @@ class IndivFournisseur extends Component
 
         $validated = $this->validate();
 
-        Reception::create([
-            'id_reception' => $validated['id_reception'],
-            'quantite' => $validated['quantite'],
-            'prix_unitaire' => $validated['prix_unitaire'],
-            'type_produit' => $validated['type_depot'],
-            'montant' => $validated['quantite'] * $validated['prix_unitaire'],
-            'fournisseur_id' => $this->id_fournisseur
-        ]); 
+        if ($validated['type_depot'] === "poulet") {
+            Reception::create([
+                'id_reception' => $validated['id_reception'],
+                'quantite' => $validated['quantite'],
+                'prix_unitaire' => $validated['prix_unitaire'],
+                'type_produit' => $validated['type_depot'],
+                'montant' => intval($validated['quantite']) * $validated['prix_unitaire'],
+                'fournisseur_id' => $this->id_fournisseur
+            ]); 
+        } else {
+            Reception::create([
+                'id_reception' => $validated['id_reception'],
+                'quantite' => $validated['quantite'],
+                'prix_unitaire' => $validated['prix_unitaire'],
+                'type_produit' => $validated['type_depot'],
+                'montant' => $validated['quantite'] * $validated['prix_unitaire'],
+                'fournisseur_id' => $this->id_fournisseur
+            ]); 
+        }
+        
 
         if ($validated['type_depot'] === 'poulet') {
             Stock::where('type', 'entier')->increment('quantite_stock', $validated['quantite']);
@@ -97,7 +109,12 @@ class IndivFournisseur extends Component
     public function montantFinal(){
         $validated = $this->validate();
         if ($validated) {
-            $this->montant = $validated['quantite'] * $validated['prix_unitaire'];
+            if ($validated['type_depot'] === "poulet") {
+                $this->montant = intval($validated['quantite']) * $validated['prix_unitaire'];
+            } else {
+                $this->montant = $validated['quantite'] * $validated['prix_unitaire'];
+            }
+            
         }
     }
 
