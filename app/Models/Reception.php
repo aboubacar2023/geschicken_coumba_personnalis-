@@ -16,6 +16,7 @@ class Reception extends Model
         'montant',
         'type_produit',
         'reglement',
+        'date_reception',
         'date_reglement',
         'fournisseur_id'
     ];

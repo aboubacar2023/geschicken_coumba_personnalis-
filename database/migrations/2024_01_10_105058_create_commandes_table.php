@@ -17,6 +17,7 @@ return new class extends Migration
         Schema::create('commandes', function (Blueprint $table) {
             $table->id();
             $table->string('id_commande');
+            $table->date('date_commande');
             $table->date('date_reglement')->nullable();
             $table->timestamps();
             $table->foreignIdFor(Client::class)->constrained()->cascadeOnDelete();

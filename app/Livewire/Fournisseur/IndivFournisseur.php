@@ -11,7 +11,7 @@ use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 class IndivFournisseur extends Component
-{
+{ 
     public $id_fournisseur;
 
     #[Validate('required', message: 'Veuillez remplir le champ')]
@@ -24,6 +24,8 @@ class IndivFournisseur extends Component
     
     #[Validate('required')]
     public $type_depot = '';
+    #[Validate('required')]
+    public $date_reception = '';
     
     #[Validate('required')]
     public $id_reception = '';
@@ -32,9 +34,22 @@ class IndivFournisseur extends Component
 
     public $montant = 0;
 
+    // Le montant à payer quand il opte pour le mode de paiement en avance, genre il regle pas totalement les
+    // dettes, mais il paye une somme pour diminuer les dettes
+    public $montant_paye ;
+
     public $mode_paiement = '';
 
+    // Payement pour solder une facture ou payer une somme seulement
+    public $type_paiement = '';
+
     public $montant_insuffisant = '';
+
+    public function rules() {
+        return [
+            'montant_paye' => $this->type_paiement === 'somme' ? 'required|numeric|gt:1' : '',
+        ];
+    }
 
 
     private function createStock() {
@@ -80,6 +95,7 @@ class IndivFournisseur extends Component
                 'quantite' => $validated['quantite'],
                 'prix_unitaire' => $validated['prix_unitaire'],
                 'type_produit' => $validated['type_depot'],
+                'date_reception' => $validated['date_reception'],
                 'montant' => intval($validated['quantite']) * $validated['prix_unitaire'],
                 'fournisseur_id' => $this->id_fournisseur
             ]); 
@@ -89,6 +105,7 @@ class IndivFournisseur extends Component
                 'quantite' => $validated['quantite'],
                 'prix_unitaire' => $validated['prix_unitaire'],
                 'type_produit' => $validated['type_depot'],
+                'date_reception' => $validated['date_reception'],
                 'montant' => $validated['quantite'] * $validated['prix_unitaire'],
                 'fournisseur_id' => $this->id_fournisseur
             ]); 
@@ -123,6 +140,7 @@ class IndivFournisseur extends Component
     }
 
     public function saveReglement() {
+        $this->validate();
 
         if ($this->mode_paiement === 'espece') {
 
@@ -186,7 +204,7 @@ class IndivFournisseur extends Component
     {
         $fournisseur  = Fournisseur::find($this->id_fournisseur);
 
-        $receptions = Reception::where('fournisseur_id',$this->id_fournisseur)->orderByDesc('created_at')->paginate(10);
+        $receptions = Reception::where('fournisseur_id',$this->id_fournisseur)->orderByDesc('date_reception')->paginate(10);
 
         $solde = Reception::where('fournisseur_id', $this->id_fournisseur)
         ->where('reglement', false)

@@ -38,9 +38,9 @@
                                 <tr wire:key="{{$reception->id}}">
                                     <td>{{$reception->id_reception}}</td>
                                     @php
-                                        $reception_date = new DateTime($reception->created_at)
+                                        $reception_date = new DateTime($reception->date_reception)
                                     @endphp
-                                    <td>{{$reception_date->format('m-d-Y')}}</td>
+                                    <td>{{$reception_date->format('d-m-Y')}}</td>
                                     <td>{{ucfirst($reception->type_produit)}}</td>
                                     <td>{{$reception->quantite}} KG</td>
                                     <td>{{number_format($reception->prix_unitaire, 0, '', ' ')}} FCFA</td>
@@ -49,7 +49,7 @@
                                         @php
                                             $reglement_date = new DateTime($reception->date_reglement)
                                         @endphp
-                                        <td>{{$reglement_date->format('m-d-Y')}}</td>
+                                        <td>{{$reglement_date->format('d-m-Y')}}</td>
                                     @else
                                         <td>---</td>
                                     @endif

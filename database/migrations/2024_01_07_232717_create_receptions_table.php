@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('prix_unitaire');
             $table->integer('montant');
             $table->string('type_produit');
+            $table->date('date_reception');
             $table->boolean('reglement')->default(false);
             $table->date('date_reglement')->nullable();
             $table->foreignIdFor(Fournisseur::class)->constrained()->cascadeOnDelete();

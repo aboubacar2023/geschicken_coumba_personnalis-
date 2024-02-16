@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <form wire:submit="saveReception">
-          @csrf
+          @csrf 
           <div class="modal-header">
           <h1 class="modal-title fs-5" id="receptionModalLabel">Nouvelle Reception</h1>
           <button type="button" wire:click="closeModal" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -35,18 +35,16 @@
                       <div class="erreur">@error('id_reception') {{$message}}@enderror</div>
                     </div>
                     <div class="col-md-6">
+                      <label class="col-form-label">Date Reception</label>
+                      <input type="date" class="form-control" wire:model="date_reception" required>
+                    </div>
+                    <div class="col-md-6">
                         <label class="col-form-label">Montant</label>
                         <div class="form-check form-switch">
                           <input type="checkbox" class="form-check-input" wire:click="montantFinal">
                         </div>
                         <input type="text" class="form-control" placeholder="{{number_format($this->montant, 0, '', ' ')}} FCFA" readonly>
                     </div>
-                    {{-- <div class="col-md-6">
-                      <label class="col-form-label">Le montant</label>
-                      <div class="form-check form-switch">
-                          <input type="checkbox" class="form-check-input" wire:click="montantFinal">
-                      </div>
-                    </div> --}}
                 </div>
             </div>
       </div>
@@ -72,28 +70,44 @@
         </div>
         <div class="modal-body">
             <div class="container-fluid">
-            <h3 class="entete_bilan">Sélectionner la facture à régler</h3>
+            <h3 class="entete_bilan">Règlement Fournisseur</h3>
               @if ($this->montant_insuffisant)
                   <h5 style="text-align: center; color:#821435">{{$this->montant_insuffisant}}</h5>
               @endif
                 <div class="row">
                     <div class="col-md-6">
-                        <label  class="col-form-label">Les Règlements</label>
-                        <select class="form-select" aria-label="Default select example" wire:model="reglement_effectif" required>
+                      <label  class="col-form-label">Type Payement</label>
+                      <select class="form-select" aria-label="Default select example" wire:model.lazy="type_paiement" required>
+                        <option value=""></option>
+                        <option value="somme">Somme</option>
+                        <option value="regelement_facture">Reglement Facture</option>
+                      </select>
+                    </div>
+                    @if ($type_paiement === 'somme')
+                        <div class="col-md-6">
+                            <label class="col-form-label">Montant</label>
+                            <input type="text" class="form-control" wire:model="montant_paye" required>
+                            <div>@error('montant_paye') {{$message}} @enderror</div>
+                        </div>
+                    @elseif ($type_paiement === 'regelement_facture')
+                      <div class="col-md-6">
+                          <label  class="col-form-label">Les Règlements</label>
+                          <select class="form-select" aria-label="Default select example" wire:model="reglement_effectif" required>
+                            <option value=""></option>
+                            @foreach ($reglements as $reglement)
+                              <option value="{{$reglement->id}}">Reception N°{{$reglement->id_reception}} -- Montant Total : {{number_format($reglement->montant, 0, '', ' ')}} FCFA</option>
+                            @endforeach
+                          </select>
+                      </div>
+                      <div class="col-md-6">
+                        <label  class="col-form-label">Mode de Paiement</label>
+                        <select class="form-select" aria-label="Default select example" wire:model="mode_paiement" required>
                           <option value=""></option>
-                          @foreach ($reglements as $reglement)
-                            <option value="{{$reglement->id}}">Reception N°{{$reglement->id_reception}} -- Montant Total : {{number_format($reglement->montant, 0, '', ' ')}} FCFA</option>
-                          @endforeach
+                          <option value="espece">Espèce</option>
+                          <option value="banque">Banque</option>
                         </select>
                     </div>
-                    <div class="col-md-6">
-                      <label  class="col-form-label">Mode de Paiement</label>
-                      <select class="form-select" aria-label="Default select example" wire:model="mode_paiement" required>
-                        <option value=""></option>
-                        <option value="espece">Espèce</option>
-                        <option value="banque">Banque</option>
-                      </select>
-                  </div>
+                    @endif
                 </div>
             </div>
       </div>
