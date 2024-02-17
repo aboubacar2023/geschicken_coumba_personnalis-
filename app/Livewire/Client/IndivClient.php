@@ -48,42 +48,52 @@ class IndivClient extends Component
     public $montant_paye ;
     
     public $mode_paiement = '';
+    // Methode qu'on va appeler quand la personne voudra plutot deposer une somme
+    private function decrementationSoldeGlobal($type, $somme)
+    {
 
+    }
     public function saveCommande() {
-        $verif = $this->montantTotal() ;
-        if ($verif) {
-        $commande = Commande::create([
-            'id_commande' => $this->id_identifiant_commande,
-            'client_id' => $this->id_client,
-            'date_commande' => $this->date_commande,
-        ]);
+        if ($this->activation && !empty($this->parties)) {
+            if($this->type_paiement === "regelement_facture"){
+                $verif = $this->montantTotal() ;
+                if ($verif) {
+                    $commande = Commande::create([
+                        'id_commande' => $this->id_identifiant_commande,
+                        'client_id' => $this->id_client,
+                        'date_commande' => $this->date_commande,
+                    ]);
 
-        foreach($this->parties as $key => $partie){
-            
-            // decrementation du stock avant l'insertion des ids de la commande et stocks dans la table intermediare
-            Stock::where('type', $partie)->decrement('quantite_stock', $this->quantite[$key]);
-            $id_stock = Stock::where('type', $partie)->value('id');
-            $stock = Stock::find($id_stock);
-            if ($partie === 'attieke') {
-                $stock->commandes()->attach($commande->id, [
-                    'quantite_type' => $this->quantite[$key],
-                    'prix_unitaire_type' => $this->prix[$key],
-                    'montant_type' => $this->quantite[$key] * $this->prix[$key],
-                    'montant_non_regle_type' => $this->quantite[$key] * $this->prix[$key]
-                ]);
+                    foreach($this->parties as $key => $partie){
+                        
+                        // decrementation du stock avant l'insertion des ids de la commande et stocks dans la table intermediare
+                        Stock::where('type', $partie)->decrement('quantite_stock', $this->quantite[$key]);
+                        $id_stock = Stock::where('type', $partie)->value('id');
+                        $stock = Stock::find($id_stock);
+                        if ($partie === 'attieke') {
+                            $stock->commandes()->attach($commande->id, [
+                                'quantite_type' => $this->quantite[$key],
+                                'prix_unitaire_type' => $this->prix[$key],
+                                'montant_type' => $this->quantite[$key] * $this->prix[$key],
+                                'montant_non_regle_type' => $this->quantite[$key] * $this->prix[$key]
+                            ]);
+                        } else {
+                            $stock->commandes()->attach($commande->id, [
+                                'quantite_type' => $this->quantite[$key],
+                                'prix_unitaire_type' => $this->prix[$key],
+                                'montant_type' => intval($this->quantite[$key]) * $this->prix[$key],
+                                'montant_non_regle_type' => intval($this->quantite[$key]) * $this->prix[$key]
+                            ]);
+                        }
+                        
+
+                    }
+
+                    return $this->redirectRoute('client.individuel', ['id_client' => $this->id_client]);
+                }
             } else {
-                $stock->commandes()->attach($commande->id, [
-                    'quantite_type' => $this->quantite[$key],
-                    'prix_unitaire_type' => $this->prix[$key],
-                    'montant_type' => intval($this->quantite[$key]) * $this->prix[$key],
-                    'montant_non_regle_type' => intval($this->quantite[$key]) * $this->prix[$key]
-                ]);
+                $this->decrementationSoldeGlobal($this->mode_paiement, $this->montant_paye);
             }
-            
-
-        }
-
-        return $this->redirectRoute('client.individuel', ['id_client' => $this->id_client]);
         }
     }
 
@@ -111,14 +121,14 @@ class IndivClient extends Component
         if (count($this->quantite) === count($this->parties) && count($this->prix) === count($this->parties)) {
             foreach($this->parties as $key => $partie){
 
-                // Verification si le nombre saisie est un chiffre et qu'il est inferieur au stock auquel il correspond
+                // Verification si les nombres saisies (quantités et prix) est un chiffre et qu'il est inferieur au stock auquel il correspond
 
                 $stock = Stock::where('type', $partie)->value('quantite_stock');
                 if ((is_numeric($this->quantite[$key]) && $this->quantite[$key] > 0 ) && ($this->quantite[$key] <= $stock) &&  (is_numeric($this->prix[$key]) && $this->prix[$key] > 0) ) {
                     $occurence++;
                 }
             }
-            // le nombre de $occurence doit etre egal au nombre du tableau
+            // le nombre de $occurence doit etre egal au nombre du tableau pour verifier si toutes les conditions sont remplies
 
             if ($occurence === count($this->parties)) {
                 foreach($this->parties as $key => $partie){
@@ -312,10 +322,10 @@ class IndivClient extends Component
         $operations = Commande::with('stocks')->where('client_id', $this->id_client)
         ->get()
         ->toArray();
-        // Vu que qu'on recevrai les données par ordre décroissant, alors on va devoir inverser le tableau pour le classement sur la vue
+        // On est obligé de faire peu d'algo pour recuperer les données
+        // Vu qu'on recevra les données par ordre décroissant, alors on va devoir inverser le tableau pour le classement sur la vue
         $datas = array_reverse($this->conversion($operations));
 
-        // dd($datas);
 
         $reglements = Commande::with('stocks')->where('client_id', $this->id_client)
         ->whereNull('date_reglement')
