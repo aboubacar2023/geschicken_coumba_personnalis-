@@ -55,9 +55,15 @@
                     </div>
                     @if(!empty($this->parties) && $this->activation)
                         <h3 class="entete_bilan mt-4">Renseignez les champs suivants : </h3>
-                        <div class="col-md-6">
-                            <label class="col-form-label">ID commande</label>
-                            <input type="text" class="form-control" wire:model="id_identifiant_commande" required>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="col-form-label">ID commande</label>
+                                <input type="text" class="form-control" wire:model="id_identifiant_commande" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="col-form-label">Date Commande</label>
+                                <input type="date" class="form-control" wire:model="date_commande" required>
+                            </div>
                         </div>
                         @foreach ($this->parties as $key => $partie)
                             <h3 class="pt-3" style="text-align: center; color:#821435">{{strtoupper($partie)}}</h3>
@@ -155,14 +161,30 @@
                     <h3 class="entete_bilan">SELECTIONNER LA FACTURE A PAYER </h3>
                     <div class="row">
                         <div class="col-md-6">
-                            <label  class="col-form-label">LES FACTURES IMPAYES</label>
-                            <select class="form-select" aria-label="Default select example" wire:model="reglement_effectif" required>
+                            <label  class="col-form-label">Type Paiement</label>
+                            <select class="form-select" aria-label="Default select example" wire:model.lazy="type_paiement" required>
                               <option value=""></option>
-                              @foreach ($reglements as $reglement)
-                                <option value="{{$reglement[0]}}">Facture N°{{$reglement[1]}} -- Montant Total : {{number_format($reglement[4], 0, '', ' ')}} FCFA</option>
-                              @endforeach
+                              <option value="somme">Somme</option>
+                              <option value="regelement_facture">Reglement Facture</option>
                             </select>
-                        </div> 
+                        </div>
+                        @if ($type_paiement === 'somme')
+                            <div class="col-md-6">
+                                <label class="col-form-label">Montant</label>
+                                <input type="text" class="form-control" wire:model="montant_paye" required>
+                                <div style="color: #821435;">@error('montant_paye') {{$message}} @enderror</div>
+                            </div>
+                        @elseif ($type_paiement === 'regelement_facture')
+                            <div class="col-md-6">
+                                <label  class="col-form-label">LES FACTURES IMPAYES</label>
+                                <select class="form-select" aria-label="Default select example" wire:model="reglement_effectif" required>
+                                <option value=""></option>
+                                @foreach ($reglements as $reglement)
+                                    <option value="{{$reglement[0]}}">Facture N°{{$reglement[1]}} -- Montant Total : {{number_format($reglement[4], 0, '', ' ')}} FCFA</option>
+                                @endforeach
+                                </select>
+                            </div> 
+                        @endif    
                         <div class="col-md-6">
                             <label  class="col-form-label">Mode de Paiement</label>
                             <select class="form-select" aria-label="Default select example" wire:model="mode_paiement" required>
@@ -171,7 +193,11 @@
                               <option value="banque">Banque</option>
                             </select>
                         </div>
-                    </div>
+                        <div class="col-md-6">
+                            <label class="col-form-label">Date Règlement</label>
+                            <input type="date" class="form-control" wire:model="date_reglement" required>
+                        </div>
+                    </div> 
                 </div>
             </div>
             <div class="modal-footer">

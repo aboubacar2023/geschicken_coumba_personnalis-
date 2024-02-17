@@ -108,6 +108,10 @@
                           <option value="banque">Banque</option>
                         </select>
                       </div>
+                      <div class="col-md-6">
+                        <label class="col-form-label">Date Règlement</label>
+                        <input type="date" class="form-control" wire:model="date_reglement" required>
+                      </div>
                 </div>
             </div>
       </div>

@@ -11,6 +11,7 @@ use Livewire\Component;
 
 class IndivClient extends Component
 {
+    
     public $prix_total = 0 ;
     public $id_client;
 
@@ -29,7 +30,12 @@ class IndivClient extends Component
     public $indiv_commande = [];
 
     public $message_erreur = '';
+    // Ajout
+    public $date_reglement = '';
+    // La date de la commande 
+    public $date_commande = '';
 
+    public $type_paiement = '';
     // Ceci est l'id manuelle qu'on saisira
     public $id_identifiant_commande = '';
 
@@ -37,6 +43,10 @@ class IndivClient extends Component
 
     public $reglement_effectif = '';
 
+    // Le montant à payer quand il opte pour le mode de paiement en avance, genre il regle pas totalement les
+    // dettes, mais il paye une somme pour diminuer les dettes
+    public $montant_paye ;
+    
     public $mode_paiement = '';
 
     public function saveCommande() {
@@ -44,7 +54,8 @@ class IndivClient extends Component
         if ($verif) {
         $commande = Commande::create([
             'id_commande' => $this->id_identifiant_commande,
-            'client_id' => $this->id_client
+            'client_id' => $this->id_client,
+            'date_commande' => $this->date_commande,
         ]);
 
         foreach($this->parties as $key => $partie){
@@ -57,13 +68,15 @@ class IndivClient extends Component
                 $stock->commandes()->attach($commande->id, [
                     'quantite_type' => $this->quantite[$key],
                     'prix_unitaire_type' => $this->prix[$key],
-                    'montant_type' => $this->quantite[$key] * $this->prix[$key]
+                    'montant_type' => $this->quantite[$key] * $this->prix[$key],
+                    'montant_non_regle_type' => $this->quantite[$key] * $this->prix[$key]
                 ]);
             } else {
                 $stock->commandes()->attach($commande->id, [
                     'quantite_type' => $this->quantite[$key],
                     'prix_unitaire_type' => $this->prix[$key],
-                    'montant_type' => intval($this->quantite[$key]) * $this->prix[$key]
+                    'montant_type' => intval($this->quantite[$key]) * $this->prix[$key],
+                    'montant_non_regle_type' => intval($this->quantite[$key]) * $this->prix[$key]
                 ]);
             }
             
@@ -105,7 +118,7 @@ class IndivClient extends Component
                     $occurence++;
                 }
             }
-            // le de $occurence doit etre egal au nombre du tableau
+            // le nombre de $occurence doit etre egal au nombre du tableau
 
             if ($occurence === count($this->parties)) {
                 foreach($this->parties as $key => $partie){
@@ -154,7 +167,7 @@ class IndivClient extends Component
         return $data;
     }
 
-
+    // Recuperation des informations d'une commande quand on regarde le modal
     public function seeCommandeIndiv($id_commande){
 
         $this->id_commande_en_cours = $id_commande;
@@ -169,7 +182,7 @@ class IndivClient extends Component
 
 
     public function conversion(array $operations) : array{
-
+        // Il va recevoir un tableau de tableau avec toutes les données de la commande
         // le tableau qui va recevoir le tableau reorganisé
         $data = [];
 
@@ -182,7 +195,7 @@ class IndivClient extends Component
                 if ($key === 'id_commande') {
                     array_push($donne, $item);
                 }
-                if ($key === 'created_at') {
+                if ($key === 'date_commande') {
                     array_push($donne, $item);
                 }
                 if ($key === 'date_reglement') {
@@ -299,8 +312,10 @@ class IndivClient extends Component
         $operations = Commande::with('stocks')->where('client_id', $this->id_client)
         ->get()
         ->toArray();
-
+        // Vu que qu'on recevrai les données par ordre décroissant, alors on va devoir inverser le tableau pour le classement sur la vue
         $datas = array_reverse($this->conversion($operations));
+
+        // dd($datas);
 
         $reglements = Commande::with('stocks')->where('client_id', $this->id_client)
         ->whereNull('date_reglement')

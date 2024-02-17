@@ -29,6 +29,7 @@ return new class extends Migration
             $table->double('quantite_type');
             $table->integer('prix_unitaire_type');
             $table->integer('montant_type');
+            $table->integer('montant_non_regle_type');
             $table->primary(['commande_id', 'stock_id']);
         });
     }

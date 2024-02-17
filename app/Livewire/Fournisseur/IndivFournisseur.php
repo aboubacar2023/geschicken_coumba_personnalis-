@@ -12,7 +12,7 @@ use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 class IndivFournisseur extends Component
-{ 
+{
     public $id_fournisseur;
 
     #[Validate('required', message: 'Veuillez remplir le champ')]
@@ -27,6 +27,8 @@ class IndivFournisseur extends Component
     public $type_depot = '';
     #[Validate('required')]
     public $date_reception = '';
+
+    public $date_reglement = '';
     
     #[Validate('required')]
     public $id_reception = '';
@@ -115,7 +117,7 @@ class IndivFournisseur extends Component
                 'type_produit' => $validated['type_depot'],
                 'date_reception' => $validated['date_reception'],
                 'montant' => $validated['quantite'] * $validated['prix_unitaire'],
-                'montant_non_regle' => intval($validated['quantite']) * $validated['prix_unitaire'],
+                'montant_non_regle' => $validated['quantite'] * $validated['prix_unitaire'],
                 'fournisseur_id' => $this->id_fournisseur
             ]); 
         }
@@ -160,7 +162,7 @@ class IndivFournisseur extends Component
         $factures = DB::table('fournisseurs')->where('fournisseurs.id', $this->id_fournisseur)
         ->join('receptions', 'fournisseurs.id', '=', 'receptions.fournisseur_id')
         ->where('reglement', false)
-        ->orderByDesc('date_reception')
+        ->orderBy('date_reception', 'asc')
         ->select('receptions.id', 'montant_non_regle')
         ->get();
 
@@ -188,8 +190,7 @@ class IndivFournisseur extends Component
                         Reception::where('id', $facture->id)->update([
                             'reglement' => true,
                             'montant_non_regle' => 0,
-                            // Revoir ici car c'est à Gogo de saisir la date de paiement
-                            'date_reglement' => now()
+                            'date_reglement' => $this->date_reglement
                         ]);
                     } else {
                         Reception::where('id', $facture->id)->decrement('montant_non_regle', $somme);
@@ -237,7 +238,7 @@ class IndivFournisseur extends Component
                 Reception::where('id', $this->reglement_effectif)->update([
                     'reglement' => true,
                     'montant_non_regle' => 0,
-                    'date_reglement' => now()
+                    'date_reglement' => $this->date_reglement
                 ]);
                 return $this->redirectRoute('fournisseur.individuel', ['fournisseur_id' => $this->id_fournisseur]);
             } else {
@@ -256,7 +257,7 @@ class IndivFournisseur extends Component
     {
         $fournisseur  = Fournisseur::find($this->id_fournisseur);
 
-        $receptions = Reception::where('fournisseur_id',$this->id_fournisseur)->orderByDesc('date_reception')->paginate(10);
+        $receptions = Reception::where('fournisseur_id',$this->id_fournisseur)->orderByDesc('date_reception')->paginate(25);
 
         $solde = Reception::where('fournisseur_id', $this->id_fournisseur)
         ->where('reglement', false)
