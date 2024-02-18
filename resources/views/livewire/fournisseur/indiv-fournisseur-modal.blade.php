@@ -21,12 +21,12 @@
                     </div>
                     <div class="col-md-6">
                         <label class="col-form-label">Quantité en KG</label>
-                        <input type="text" class="form-control" wire:model="quantite" required>
+                        <input type="text" class="form-control @error('quantite') is-invalid @enderror" wire:model="quantite" required>
                         <div class="erreur">@error('quantite') {{$message}}@enderror</div>
                     </div>
                     <div class="col-md-6">
                         <label class="col-form-label">Prix Unitaire en FCFA</label>
-                        <input type="text" class="form-control" wire:model="prix_unitaire" required>
+                        <input type="text" class="form-control @error('prix_unitaire') is-invalid @enderror" wire:model="prix_unitaire" required>
                         <div class="erreur">@error('prix_unitaire') {{$message}}@enderror</div>
                     </div>
                     <div class="col-md-6">
@@ -79,17 +79,19 @@
                       <label  class="col-form-label">Type Paiement</label>
                       <select class="form-select" aria-label="Default select example" wire:model.lazy="type_paiement" required>
                         <option value=""></option>
-                        <option value="somme">Somme</option>
-                        <option value="regelement_facture">Reglement Facture</option>
+                        @if ($solde !== 0)
+                          <option value="somme">Somme</option>
+                        @endif
+                        <option value="reglement_facture">Reglement Facture</option>
                       </select>
                     </div>
                     @if ($type_paiement === 'somme')
                         <div class="col-md-6">
                             <label class="col-form-label">Montant</label>
-                            <input type="text" class="form-control" wire:model="montant_paye" required>
+                            <input type="text" class="form-control @error('montant_paye') is-invalid @enderror" wire:model="montant_paye" required>
                             <div style="color: #821435;">@error('montant_paye') {{$message}} @enderror</div>
                         </div>
-                    @elseif ($type_paiement === 'regelement_facture')
+                    @elseif ($type_paiement === 'reglement_facture')
                       <div class="col-md-6">
                           <label  class="col-form-label">Les Règlements</label>
                           <select class="form-select" aria-label="Default select example" wire:model="reglement_effectif" required>

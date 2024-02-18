@@ -7,6 +7,7 @@ use App\Models\Client;
 use App\Models\Commande;
 use App\Models\Operation;
 use App\Models\Stock;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
 class IndivClient extends Component
@@ -48,15 +49,19 @@ class IndivClient extends Component
     public $montant_paye ;
     
     public $mode_paiement = '';
-    // Methode qu'on va appeler quand la personne voudra plutot deposer une somme
-    private function decrementationSoldeGlobal($type, $somme)
-    {
-        if ($type === "espece") {
-            $type_caisse = "somme_caisse";
-        } else {
-            $type_caisse = "somme_banque";
-        }
+
+    public function rules() {
+        return [
+            'montant_paye' => $this->type_paiement === 'somme' ? 'required|numeric|gt:1' : '',
+        ];
     }
+    public function messages() {
+        return [
+            'montant_paye.gt' => "Veuillez Saisir un chiffre superieur à 0",
+            'montant_paye.numeric' => "Veuillez Saisir des Chiffres",
+        ];
+    }
+
     public function saveCommande() {
         if ($this->activation && !empty($this->parties)) {
                 $verif = $this->montantTotal() ;
@@ -65,6 +70,8 @@ class IndivClient extends Component
                         'id_commande' => $this->id_identifiant_commande,
                         'client_id' => $this->id_client,
                         'date_commande' => $this->date_commande,
+                        'montant_commande' => $this->prix_total,
+                        'montant_non_regle_type' => $this->prix_total
                     ]);
 
                     foreach($this->parties as $key => $partie){
@@ -78,14 +85,12 @@ class IndivClient extends Component
                                 'quantite_type' => $this->quantite[$key],
                                 'prix_unitaire_type' => $this->prix[$key],
                                 'montant_type' => $this->quantite[$key] * $this->prix[$key],
-                                'montant_non_regle_type' => $this->quantite[$key] * $this->prix[$key]
                             ]);
                         } else {
                             $stock->commandes()->attach($commande->id, [
                                 'quantite_type' => $this->quantite[$key],
                                 'prix_unitaire_type' => $this->prix[$key],
                                 'montant_type' => intval($this->quantite[$key]) * $this->prix[$key],
-                                'montant_non_regle_type' => intval($this->quantite[$key]) * $this->prix[$key]
                             ]);
                         }
                         
@@ -110,10 +115,10 @@ class IndivClient extends Component
         }
     }
 
-    // Ceci es fait pour calculer le montant total mais egalement de referentiel de validation avant de sauvegarder la commande
+    // Ceci est fait pour calculer le montant total mais egalement de referentiel de validation avant de sauvegarder la commande
     public function montantTotal() : bool {
 
-        // Maintenant attaquer la partie ou on va obliger l'itilisateur a saisir un chiffre inferieur à la quantité dans le stock
+        // Maintenant attaquer la partie ou on va obliger l'utilisateur a saisir un chiffre inferieur à la quantité dans le stock
 
         $this->reset('message_erreur', 'prix_total');
         $occurence = 0 ;
@@ -190,66 +195,47 @@ class IndivClient extends Component
         $this->reset('id_commande_en_cours', 'indiv_commande');
     }
 
-
-    public function conversion(array $operations) : array{
-        // Il va recevoir un tableau de tableau avec toutes les données de la commande
-        // le tableau qui va recevoir le tableau reorganisé
-        $data = [];
-
-        foreach($operations as $operation){
-            $donne = [] ;
-            foreach($operation as $key => $item){ 
-                if ($key === 'id') {
-                    array_push($donne, $item);
-                }
-                if ($key === 'id_commande') {
-                    array_push($donne, $item);
-                }
-                if ($key === 'date_commande') {
-                    array_push($donne, $item);
-                }
-                if ($key === 'date_reglement') {
-                    array_push($donne, $item);
-                }
-                if ($key === 'stocks') {
-                    $montant = 0 ;
-                    foreach($item as $partie){
-                        // recuperation du montant de chaque type de produit concercant la commande en cours dans la boucle 
-                        $montant += $partie['commande_stock']['montant_type'];
-                    }
-                    
-                    // affectation du montant total d'un commande au tableau
-                    array_push($donne, $montant);
-                }
-
-            }
-            array_push($data, $donne);
+    // Methode qu'on va appeler quand la personne voudra plutot deposer une somme
+    private function decrementationSoldeGlobal($type, $somme) : void
+    {
+        if ($type === "espece") {
+            $type_caisse = "somme_caisse";
+        } else {
+            $type_caisse = "somme_banque";
         }
+        $commandes = Commande::where('client_id', $this->id_client)
+        ->whereNull('date_reglement')
+        ->orderBy('date_commande', 'asc')
+        ->select('commandes.id', 'montant_non_regle_type')
+        ->get();
 
-        return $data;
-    }
+        // Ajout de l'info dans les activités du jour
+        $id_caisse = Caisse::where('type_caisse', $type_caisse)->value('id');
+        Operation::create([
+            'type_operation' => 'Règlement Client',
+            'montant_operation' => $somme,
+            'caisse_id' => $id_caisse,
+        ]);
 
-    public function recuperationMontantPaiement(array $datas) : int{
-        $somme = 0;
-        foreach($datas as $data){
-            foreach($data as $key => $item){ 
-                if ($key === 'stocks') {
-                    $montant = 0 ;
-                    foreach($item as $partie){
-                        // recuperation du montant de chaque type de produit concercant la commande en cours dans la boucle 
-                        $montant += $partie['commande_stock']['montant_type'];
-                    }
-                    
-                    // affectation du montant  à la somme global
-                   $somme += $montant;
+        // Augmentation de la somme de la caisse en fonction du type
+        Caisse::where('type_caisse', $type_caisse)->increment('somme_type', $somme);
+        
+        foreach($commandes as $commande){
+            if ($somme > 0) {
+                if ($somme >= $commande->montant_non_regle_type) {
+                    Commande::where('id', $commande->id)->update([
+                        'date_reglement' => $this->date_reglement,
+                        'montant_non_regle_type' => 0
+                    ]);
+                } else{
+                    Commande::where('id', $commande->id)->decrement('montant_non_regle_type', $somme);
                 }
-
+                $somme -= $commande->montant_non_regle_type;
+            } else {
+                break ;
             }
         }
-        return $somme;
-
     }
-
 
     public function savePaiement() {
         if($this->type_paiement === "regelement_facture"){
@@ -259,11 +245,8 @@ class IndivClient extends Component
             } else {
                 $type_caisse = "somme_banque";
             }
-                $somme_paiement = Commande::with('stocks')->where('id', $this->reglement_effectif)
-                ->get()
-                ->toArray();
-                // recuperation de la somme globlal concerné par la commande à régler
-                $somme_paiement = $this->recuperationMontantPaiement($somme_paiement);
+                // Récuperation de la somme non réglé par la commande
+                $somme_paiement = Commande::where('id', $this->reglement_effectif)->value('montant_non_regle_type');
         
                 $id_caisse = Caisse::where('type_caisse', $type_caisse)->value('id');
                 Operation::create([
@@ -275,62 +258,36 @@ class IndivClient extends Component
                 Caisse::where('type_caisse', $type_caisse)->increment('somme_type', $somme_paiement);
         
                 Commande::where('id', $this->reglement_effectif)->update([
-                    'date_reglement' => $this->date_reglement
+                    'date_reglement' => $this->date_reglement,
+                    'montant_non_regle_type' => 0
                 ]);
             
-            return $this->redirectRoute('client.individuel', ['id_client' => $this->id_client]);
-        } else {
-            $this->decrementationSoldeGlobal($this->mode_paiement, $this->montant_paye);
-        }
-    }
-
-
-    public function calculSolde(array $datas) : int {
-
-        $solde = 0 ;
-        foreach($datas as $data){
-            foreach($data as $key => $item){ 
-                if ($key === 'stocks') {
-                    $montant = 0 ;
-                    foreach($item as $partie){
-                        $montant += $partie['commande_stock']['montant_type'];
-                    }
-                    
-                    $solde += $montant ;
-                }
-
+            } else {
+                $validated = $this->validate([
+                    'montant_paye' => 'required|numeric|gt:1'
+                ]);
+                $this->decrementationSoldeGlobal($this->mode_paiement, $validated['montant_paye']);
             }
-        }
-
-        return $solde;
+            return $this->redirectRoute('client.individuel', ['id_client' => $this->id_client]);
     }
 
     
     public function render()
     {
-        $operations = Commande::with('stocks')->where('client_id', $this->id_client)
-        ->get()
-        ->toArray();
-        // On est obligé de faire peu d'algo pour recuperer les données
-        // Vu qu'on recevra les données par ordre décroissant, alors on va devoir inverser le tableau pour le classement sur la vue
-        $datas = array_reverse($this->conversion($operations));
+        $datas = Commande::where('client_id', $this->id_client)
+        ->orderByDesc('date_commande')
+        ->paginate(25);
 
-
-        $reglements = Commande::with('stocks')->where('client_id', $this->id_client)
+        $reglements = Commande::where('client_id', $this->id_client)
         ->whereNull('date_reglement')
-        ->get()
-        ->toArray();
+        ->get();
 
-        $reglements = array_reverse($this->conversion($reglements));
-
-        $solde = Commande::with('stocks')->where('client_id', $this->id_client)
+        $solde = Commande::where('client_id', $this->id_client)
         ->whereNull('date_reglement')
-        ->get()
-        ->toArray();
-
-        $solde = $this->calculSolde($solde);
+        ->sum('montant_non_regle_type');
 
         $client = Client::find($this->id_client);
+
         return view('livewire.client.indiv-client', [
             'client' => $client,
             'datas' => $datas,

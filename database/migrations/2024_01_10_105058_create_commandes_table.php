@@ -18,6 +18,8 @@ return new class extends Migration
             $table->id();
             $table->string('id_commande');
             $table->date('date_commande');
+            $table->integer('montant_commande');
+            $table->integer('montant_non_regle_type');
             $table->date('date_reglement')->nullable();
             $table->timestamps();
             $table->foreignIdFor(Client::class)->constrained()->cascadeOnDelete();
@@ -29,7 +31,6 @@ return new class extends Migration
             $table->double('quantite_type');
             $table->integer('prix_unitaire_type');
             $table->integer('montant_type');
-            $table->integer('montant_non_regle_type');
             $table->primary(['commande_id', 'stock_id']);
         });
     }

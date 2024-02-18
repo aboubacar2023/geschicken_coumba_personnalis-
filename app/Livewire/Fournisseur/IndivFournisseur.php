@@ -209,9 +209,8 @@ class IndivFournisseur extends Component
     }
 
     public function saveReglement() {
-
         // Verification si on veut regler une facture ou deposer une somme
-        if ($this->type_paiement === "regelement_facture") {
+        if ($this->type_paiement === "reglement_facture") {
 
             // Ici on determine le mode de paeiment avant la suite
             if ($this->mode_paiement === "espece") {
@@ -246,7 +245,10 @@ class IndivFournisseur extends Component
             }
             
         } else {
-            $this->decrementationSoldeGlobal($this->mode_paiement, $this->montant_paye);
+            $validated = $this->validate([
+                'montant_paye' => 'required|numeric|gt:1'
+            ]);
+            $this->decrementationSoldeGlobal($this->mode_paiement, $validated['montant_paye']);
         }
         
         

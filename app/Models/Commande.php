@@ -14,6 +14,8 @@ class Commande extends Model
         'id',
         'id_commande',
         'date_commande',
+        'montant_commande',
+        'montant_non_regle_type',
         'client_id'
     ];
 

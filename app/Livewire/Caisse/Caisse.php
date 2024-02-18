@@ -29,13 +29,10 @@ class Caisse extends Component
         if ($this->annee && $this->mois) {
 
             $this->rapport = [];
-            $ventes = Commande::with('stocks')
-            ->whereNotNull('date_reglement')
+            $this->rapport['vente'] = Commande::whereNotNull('date_reglement')
             ->whereYear('created_at', $this->annee)
             ->whereMonth('created_at', $this->mois)
-            ->get()
-            ->toArray();
-            $this->rapport['vente'] = $this->recuperationSomme($ventes);
+            ->sum('montant_commande');
 
             $this->rapport['investissement'] = Reception::whereYear('created_at', $this->annee)
             ->whereMonth('created_at', $this->mois)->sum('montant');
@@ -73,12 +70,9 @@ class Caisse extends Component
 
         }else{
             $this->rapport = [];
-            $ventes = Commande::with('stocks')
-            ->whereNotNull('date_reglement')
+            $this->rapport['vente'] = Commande::whereNotNull('date_reglement')
             ->whereYear('created_at', $this->annee)
-            ->get()
-            ->toArray();
-            $this->rapport['vente'] = $this->recuperationSomme($ventes);
+            ->sum('montant_commande');
 
             $this->rapport['investissement'] = Reception::whereYear('created_at', $this->annee)
             ->sum('montant');
@@ -112,31 +106,6 @@ class Caisse extends Component
         }
     }
 
-    public function recuperationSomme(array $datas) : int{
-
-        $somme = 0;
-
-        foreach($datas as $data){
-            foreach($data as $key => $item){ 
-                if ($key === 'stocks') {
-                    $montant = 0 ;
-                    foreach($item as $partie){
-
-                        // recuperation du montant de chaque type de produit concercant la commande en cours dans la boucle 
-                        $montant += $partie['commande_stock']['montant_type'];
-                    }
-                    $somme += $montant;
-                    // ajout du montant total à la somme global
-                    
-                }
-
-            }
-            
-        }
-
-        return $somme;
-    }
-
     public function closeModal() {
         $this->rapport = [];
         $this->pertes = '';
@@ -144,11 +113,9 @@ class Caisse extends Component
 
     public function render()
     {
-        $dette_clients = Commande::with('stocks')->whereNull('date_reglement')->get()->toArray();
-        $dette_clients = $this->recuperationSomme($dette_clients);
+        $dette_clients = Commande::whereNull('date_reglement')->sum('montant_non_regle_type');
 
-        $ventes = Commande::with('stocks')->whereNotNull('date_reglement')->get()->toArray();
-        $ventes = $this->recuperationSomme($ventes);
+        $ventes = Commande::whereNotNull('date_reglement')->sum('montant_commande');
 
         $dette_fournisseurs = Reception::where('reglement', false)->sum('montant_non_regle');
 

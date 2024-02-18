@@ -164,14 +164,16 @@
                             <label  class="col-form-label">Type Paiement</label>
                             <select class="form-select" aria-label="Default select example" wire:model.lazy="type_paiement" required>
                               <option value=""></option>
-                              <option value="somme">Somme</option>
+                              @if ($solde !== 0)
+                                <option value="somme">Somme</option>
+                              @endif
                               <option value="regelement_facture">Reglement Facture</option>
                             </select>
                         </div>
                         @if ($type_paiement === 'somme')
                             <div class="col-md-6">
                                 <label class="col-form-label">Montant</label>
-                                <input type="text" class="form-control" wire:model="montant_paye" required>
+                                <input type="text" class="form-control @error('montant_paye') is-invalid @enderror" wire:model="montant_paye" required>
                                 <div style="color: #821435;">@error('montant_paye') {{$message}} @enderror</div>
                             </div>
                         @elseif ($type_paiement === 'regelement_facture')
@@ -180,7 +182,7 @@
                                 <select class="form-select" aria-label="Default select example" wire:model="reglement_effectif" required>
                                 <option value=""></option>
                                 @foreach ($reglements as $reglement)
-                                    <option value="{{$reglement[0]}}">Facture N°{{$reglement[1]}} -- Montant Total : {{number_format($reglement[4], 0, '', ' ')}} FCFA</option>
+                                    <option value="{{$reglement->id}}">Facture N°{{$reglement->id_commande}} -- Montant Total : {{number_format($reglement->montant_non_regle_type, 0, '', ' ')}} FCFA</option>
                                 @endforeach
                                 </select>
                             </div> 

@@ -26,7 +26,8 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Date Commande</th>
-                                <th>Montant Total</th>
+                                <th>Montant</th>
+                                <th>Reste Paiement</th>
                                 <th>Date Règlement</th>
                                 <th>Action</th>
                                 <th>Statut</th>
@@ -34,25 +35,26 @@
                         </thead>
                         <tbody>
                             @foreach ($datas as $data)
-                                <tr wire:key="{{$data[0]}}">
-                                    <td>{{$data[1]}}</td>
+                                <tr wire:key="{{$data->id}}">
+                                    <td>{{$data->id_commande}}</td>
                                     @php
-                                        $new_format = new DateTime($data[2]);
+                                        $new_format = new DateTime($data->date_commande);
                                     @endphp
                                     <td>{{$new_format->format('d-m-Y')}}</td>
-                                    <td>{{number_format($data[4], 0, '', ' ')}} FCFA</td>
-                                    @if ($data[3])
+                                    <td>{{number_format($data->montant_commande, 0, '', ' ')}} FCFA</td>
+                                    <td>{{number_format($data->montant_non_regle_type, 0, '', ' ')}} FCFA</td>
+                                    @if ($data->date_reglement)
                                         @php
-                                            $format = new DateTime($data[3])
+                                            $format = new DateTime($data->date_reglement)
                                         @endphp
                                         <td>{{$format->format('d-m-Y')}}</td>
                                     @else
                                         <td>---</td>
                                     @endif
                                     <td>
-                                        <button type="button" wire:click="seeCommandeIndiv({{$data[0]}})" class="btn btn-warning" style="color: white;" data-bs-toggle="modal" data-bs-target="#seeCommandeModal" data-bs-whatever="@mdo"><i class="fa-solid fa-eye"></i></button>
+                                        <button type="button" wire:click="seeCommandeIndiv({{$data->id}})" class="btn btn-warning" style="color: white;" data-bs-toggle="modal" data-bs-target="#seeCommandeModal" data-bs-whatever="@mdo"><i class="fa-solid fa-eye"></i></button>
                                     </td>
-                                    @if ($data[3])
+                                    @if ($data->date_reglement)
                                         <td><button class="btn td_client" style="background-color: green"></button></td>  
                                     @else
                                     <td><button class="btn td_client" style="background-color: red"></button></td>
@@ -61,6 +63,7 @@
                             @endforeach
                         </tbody>
                     </table> 
+                    {{ $datas->links() }}
                 </div>
             </div>
         </div>
