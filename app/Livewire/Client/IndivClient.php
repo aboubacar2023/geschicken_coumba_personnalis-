@@ -51,11 +51,14 @@ class IndivClient extends Component
     // Methode qu'on va appeler quand la personne voudra plutot deposer une somme
     private function decrementationSoldeGlobal($type, $somme)
     {
-
+        if ($type === "espece") {
+            $type_caisse = "somme_caisse";
+        } else {
+            $type_caisse = "somme_banque";
+        }
     }
     public function saveCommande() {
         if ($this->activation && !empty($this->parties)) {
-            if($this->type_paiement === "regelement_facture"){
                 $verif = $this->montantTotal() ;
                 if ($verif) {
                     $commande = Commande::create([
@@ -91,9 +94,6 @@ class IndivClient extends Component
 
                     return $this->redirectRoute('client.individuel', ['id_client' => $this->id_client]);
                 }
-            } else {
-                $this->decrementationSoldeGlobal($this->mode_paiement, $this->montant_paye);
-            }
         }
     }
 
@@ -252,47 +252,36 @@ class IndivClient extends Component
 
 
     public function savePaiement() {
-
-        if ($this->mode_paiement === 'espece') {
-            $somme_paiement = Commande::with('stocks')->where('id', $this->reglement_effectif)
-            ->get()
-            ->toArray();
-            $somme_paiement = $this->recuperationMontantPaiement($somme_paiement);
-    
-            $id_caisse = Caisse::where('type_caisse', 'somme_caisse')->value('id');
-            Operation::create([
-                'type_operation' => 'Règlement Client',
-                'montant_operation' => $somme_paiement,
-                'caisse_id' => $id_caisse,
-            ]);
-    
-            Caisse::where('type_caisse', 'somme_caisse')->increment('somme_type', $somme_paiement);
-    
-            Commande::where('id', $this->reglement_effectif)->update([
-                'date_reglement' => now()
-            ]);
-        } else {
-
-            $somme_paiement = Commande::with('stocks')->where('id', $this->reglement_effectif)
-            ->get()
-            ->toArray();
-            $somme_paiement = $this->recuperationMontantPaiement($somme_paiement);
-    
-            $id_caisse = Caisse::where('type_caisse', 'somme_banque')->value('id');
-            Operation::create([
-                'type_operation' => 'Règlement Client',
-                'montant_operation' => $somme_paiement,
-                'caisse_id' => $id_caisse,
-            ]);
-    
-            Caisse::where('type_caisse', 'somme_banque')->increment('somme_type', $somme_paiement);
-    
-            Commande::where('id', $this->reglement_effectif)->update([
-                'date_reglement' => now()
-            ]);
-        }
+        if($this->type_paiement === "regelement_facture"){
+            // On verifie si on fait l'operation sur la caisse ou la banque
+            if ($this->mode_paiement === "espece") {
+                $type_caisse = "somme_caisse";
+            } else {
+                $type_caisse = "somme_banque";
+            }
+                $somme_paiement = Commande::with('stocks')->where('id', $this->reglement_effectif)
+                ->get()
+                ->toArray();
+                // recuperation de la somme globlal concerné par la commande à régler
+                $somme_paiement = $this->recuperationMontantPaiement($somme_paiement);
         
-        return $this->redirectRoute('client.individuel', ['id_client' => $this->id_client]);
+                $id_caisse = Caisse::where('type_caisse', $type_caisse)->value('id');
+                Operation::create([
+                    'type_operation' => 'Règlement Client',
+                    'montant_operation' => $somme_paiement,
+                    'caisse_id' => $id_caisse,
+                ]);
+        
+                Caisse::where('type_caisse', $type_caisse)->increment('somme_type', $somme_paiement);
+        
+                Commande::where('id', $this->reglement_effectif)->update([
+                    'date_reglement' => $this->date_reglement
+                ]);
+            
+            return $this->redirectRoute('client.individuel', ['id_client' => $this->id_client]);
+        } else {
+            $this->decrementationSoldeGlobal($this->mode_paiement, $this->montant_paye);
+        }
     }
 
 
