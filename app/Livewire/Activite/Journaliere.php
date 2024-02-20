@@ -41,60 +41,37 @@ class Journaliere extends Component
         
     }
 
-    public function retraitCaisse() {
-        $validated = $this->validate();
-
-        $id_caisse = Caisse::where('type_caisse', 'somme_caisse')->value('id');
-        $id_depense = Caisse::where('type_caisse', '_depense')->value('id');
-
-        Caisse::where('id', $id_caisse)->decrement('somme_type', $validated['montant']);
-        if ($this->motif === 'virement') {
-            $id_banque = Caisse::where('type_caisse', 'somme_banque')->value('id');
-            Caisse::where('id', $id_banque)->increment('somme_type', $validated['montant']);
-        }
-        Operation::create([
-            'type_operation' => $this->motif, 
-            'montant_operation' => $validated['montant'],
-            'caisse_id' => $id_depense
-        ]);
-        Caisse::where('id', $id_depense)->increment('somme_type', $validated['montant']);
-        return $this->redirectRoute('activite-journaliere');
-    }
-
-    public function retraitBanque() {
-
-        $validated = $this->validate();
-
-        $id_caisse = Caisse::where('type_caisse', 'somme_banque')->value('id');
-        $id_depense = Caisse::where('type_caisse', '_depense')->value('id');
-
-        Caisse::where('id', $id_caisse)->decrement('somme_type', $validated['montant']);
-        Operation::create([
-            'type_operation' => $this->motif, 
-            'montant_operation' => $validated['montant'],
-            'caisse_id' => $id_depense
-        ]);
-        Caisse::where('id', $id_depense)->increment('somme_type', $validated['montant']);
-        return $this->redirectRoute('activite-journaliere');
-
-    }
     public function depense() {
         if ($this->mode_paiement === 'espece') {
-            $this->retraitCaisse();
+            $caisse = "somme_caisse";
         } else {
-            $this->retraitBanque();
+            $caisse = "somme_banque";
         }
+
+        $validated = $this->validate();
+
+        $id_caisse = Caisse::where('type_caisse', $caisse)->value('id');
+        $id_depense = Caisse::where('type_caisse', '_depense')->value('id');
+
+        Caisse::where('id', $id_caisse)->decrement('somme_type', $validated['montant']);
+        Operation::create([
+            'type_operation' => $this->motif, 
+            'montant_operation' => $validated['montant'],
+            'caisse_id' => $id_depense
+        ]);
+        Caisse::where('id', $id_depense)->increment('somme_type', $validated['montant']);
+        return $this->redirectRoute('activite-journaliere');
         
         
     }
+    
     public function render()
     {
-        $maintenant = new DateTime();
 
         $operations = Operation::with('caisse')
-        ->whereYear('created_at', $maintenant->format('Y'))
-        ->whereMonth('created_at', $maintenant->format('m'))
-        ->whereDay('created_at', $maintenant->format('d'))
+        ->whereYear('created_at', now()->format('Y'))
+        ->whereMonth('created_at', now()->format('m'))
+        ->whereDay('created_at', now()->format('d'))
         ->orderByDesc('created_at')
         ->get();
 
