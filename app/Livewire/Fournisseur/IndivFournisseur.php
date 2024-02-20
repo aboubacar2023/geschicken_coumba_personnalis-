@@ -97,19 +97,6 @@ class IndivFournisseur extends Component
         $this->createStock();
 
         $validated = $this->validate();
-
-        if ($validated['type_depot'] === "poulet") {
-            Reception::create([
-                'id_reception' => $validated['id_reception'],
-                'quantite' => $validated['quantite'],
-                'prix_unitaire' => $validated['prix_unitaire'],
-                'type_produit' => $validated['type_depot'],
-                'date_reception' => $validated['date_reception'],
-                'montant' => intval($validated['quantite']) * $validated['prix_unitaire'],
-                'montant_non_regle' => intval($validated['quantite']) * $validated['prix_unitaire'],
-                'fournisseur_id' => $this->id_fournisseur
-            ]); 
-        } else {
             Reception::create([
                 'id_reception' => $validated['id_reception'],
                 'quantite' => $validated['quantite'],
@@ -120,14 +107,8 @@ class IndivFournisseur extends Component
                 'montant_non_regle' => $validated['quantite'] * $validated['prix_unitaire'],
                 'fournisseur_id' => $this->id_fournisseur
             ]); 
-        }
         
-
-        if ($validated['type_depot'] === 'poulet') {
-            Stock::where('type', 'entier')->increment('quantite_stock', $validated['quantite']);
-        } else {
-            Stock::where('type', 'attieke')->increment('quantite_stock', $validated['quantite']);
-        }
+            Stock::where('type', $validated['type_depot'] )->increment('quantite_stock', $validated['quantite']);
         
 
 
@@ -138,7 +119,7 @@ class IndivFournisseur extends Component
         $validated = $this->validate();
         if ($validated) {
             if ($validated['type_depot'] === "poulet") {
-                $this->montant = intval($validated['quantite']) * $validated['prix_unitaire'];
+                $this->montant = $validated['quantite'] * $validated['prix_unitaire'];
             } else {
                 $this->montant = $validated['quantite'] * $validated['prix_unitaire'];
             }
@@ -270,11 +251,14 @@ class IndivFournisseur extends Component
         ->select('id', 'id_reception', 'montant_non_regle')
         ->get();
 
+        $type_produit = Stock::select('type')->get();
+
         return view('livewire.fournisseur.indiv-fournisseur', [
             'fournisseur' => $fournisseur, 
             'receptions' => $receptions, 
             'solde' => $solde,
-            'reglements' => $reglements
+            'reglements' => $reglements,
+            'type_produit' => $type_produit
         ]);
     }
 }

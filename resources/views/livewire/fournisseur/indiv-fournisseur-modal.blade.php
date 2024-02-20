@@ -15,8 +15,11 @@
                       <label  class="col-form-label">Type Produit</label>
                       <select class="form-select" aria-label="Default select example" wire:model="type_depot" required>
                         <option value=""></option>
-                        <option value="poulet">Poulet</option>
-                        <option value="attieke">Attiéké</option>
+                        @if ($type_produit)
+                          @foreach ($type_produit as $item)
+                            <option value="{{$item->type}}">{{ucfirst($item->type)}}</option>
+                          @endforeach
+                        @endif
                       </select>
                     </div>
                     <div class="col-md-6">

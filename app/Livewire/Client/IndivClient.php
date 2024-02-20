@@ -90,7 +90,7 @@ class IndivClient extends Component
                             $stock->commandes()->attach($commande->id, [
                                 'quantite_type' => $this->quantite[$key],
                                 'prix_unitaire_type' => $this->prix[$key],
-                                'montant_type' => intval($this->quantite[$key]) * $this->prix[$key],
+                                'montant_type' => $this->quantite[$key] * $this->prix[$key],
                             ]);
                         }
                         
@@ -143,7 +143,7 @@ class IndivClient extends Component
                    if ($partie === 'attieke') {
                         $this->prix_total += $this->quantite[$key] * $this->prix[$key];
                    } else {
-                       $this->prix_total += intval($this->quantite[$key]) * $this->prix[$key];
+                       $this->prix_total += $this->quantite[$key] * $this->prix[$key];
                    }
                    
                 }
