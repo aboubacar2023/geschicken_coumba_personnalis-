@@ -7,7 +7,7 @@
         <div class="contenu">
             <div class="pb-4">
                 <button type="button" class="btn" style="background-color: #821435; color: white;" data-bs-toggle="modal" data-bs-target="#depenseModal" data-bs-whatever="@mdo" ><i class="fa-solid fa-money-check-dollar icon"></i>Opération</button>
-                <button type="button" class="btn" style="background-color: #821435; color: white;" data-bs-toggle="modal" data-bs-target="#encaissementModal" data-bs-whatever="@mdo" ><i class="fa-solid fa-hand-holding-dollar icon"></i>Encaissement</button>
+                {{-- <button type="button" class="btn" style="background-color: #821435; color: white;" data-bs-toggle="modal" data-bs-target="#encaissementModal" data-bs-whatever="@mdo" ><i class="fa-solid fa-hand-holding-dollar icon"></i>Encaissement</button> --}}
             </div>
             <div class="tableau pt-4">
                 <div class="titre">

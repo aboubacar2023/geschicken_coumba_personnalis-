@@ -50,17 +50,19 @@ class Journaliere extends Component
 
         $validated = $this->validate();
 
-        $id_caisse = Caisse::where('type_caisse', $caisse)->value('id');
-        $id_depense = Caisse::where('type_caisse', '_depense')->value('id');
+        $caisse = Caisse::select('id', 'somme_type')->where('type_caisse', $caisse)->first();
+        if ($caisse->somme_type >= $validated['montant']) {
+                $id_depense = Caisse::where('type_caisse', '_depense')->value('id');
 
-        Caisse::where('id', $id_caisse)->decrement('somme_type', $validated['montant']);
-        Operation::create([
-            'type_operation' => $this->motif, 
-            'montant_operation' => $validated['montant'],
-            'caisse_id' => $id_depense
-        ]);
-        Caisse::where('id', $id_depense)->increment('somme_type', $validated['montant']);
-        return $this->redirectRoute('activite-journaliere');
+                Caisse::where('id', $caisse->id)->decrement('somme_type', $validated['montant']);
+                Operation::create([
+                    'type_operation' => $this->motif, 
+                    'montant_operation' => $validated['montant'],
+                    'caisse_id' => $id_depense
+                ]);
+                Caisse::where('id', $id_depense)->increment('somme_type', $validated['montant']);
+                return $this->redirectRoute('activite-journaliere');
+        }
         
         
     }

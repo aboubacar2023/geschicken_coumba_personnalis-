@@ -77,7 +77,7 @@ class ApercuClient extends Component
             });
         }
 
-        $clients = $clients->paginate(15) ;
+        $clients = $clients->paginate(25) ;
         return view('livewire.client.apercu-client', [
             'clients' => $clients,
         ]);
