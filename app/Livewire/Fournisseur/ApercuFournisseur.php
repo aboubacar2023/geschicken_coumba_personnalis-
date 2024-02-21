@@ -104,7 +104,7 @@ class ApercuFournisseur extends Component
                 ->orWhere('nom', 'like', "%{$this->query}%")
                 ->orWhere('contact', 'like', "%{$this->query}%");
             });
-        }
+        } 
         $fournisseurs = $fournisseurs->paginate(15) ;
         return view('livewire.fournisseur.apercu-fournisseur', [
             'fournisseurs' => $fournisseurs

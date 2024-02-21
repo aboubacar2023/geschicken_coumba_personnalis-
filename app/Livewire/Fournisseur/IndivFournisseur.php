@@ -13,6 +13,7 @@ use Livewire\Component;
 
 class IndivFournisseur extends Component
 {
+    public $query = '';
     public $id_fournisseur;
 
     #[Validate('required', message: 'Veuillez remplir le champ')]
@@ -240,7 +241,13 @@ class IndivFournisseur extends Component
     {
         $fournisseur  = Fournisseur::find($this->id_fournisseur);
 
-        $receptions = Reception::where('fournisseur_id',$this->id_fournisseur)->orderByDesc('date_reception')->paginate(25);
+        $receptions = Reception::where('fournisseur_id',$this->id_fournisseur)->orderByDesc('date_reception');
+
+        if ($this->query) {
+            $receptions = $receptions->where('id_reception', 'like', '%'.$this->query.'%');
+        }
+
+        $receptions = $receptions->paginate(25);
 
         $solde = Reception::where('fournisseur_id', $this->id_fournisseur)
         ->where('reglement', false)

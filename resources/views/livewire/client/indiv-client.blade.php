@@ -19,6 +19,9 @@
             <div class="tableau pt-4">
                 <div class="titre">
                     <div><h4>Historique des opérations</h4></div>
+                    <div>
+                        <input type="text" wire:model.live="query" placeholder="Recherche" class="form-control">
+                    </div>
                 </div>
                 <div>
                     <table class="table table-striped table-bordered" >

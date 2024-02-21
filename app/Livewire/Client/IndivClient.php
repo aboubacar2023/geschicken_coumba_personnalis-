@@ -12,6 +12,7 @@ use Livewire\Component;
 
 class IndivClient extends Component
 {
+    public $query = '';
     
     public $prix_total = 0 ;
     public $id_client;
@@ -275,8 +276,11 @@ class IndivClient extends Component
     public function render()
     {
         $datas = Commande::where('client_id', $this->id_client)
-        ->orderByDesc('date_commande')
-        ->paginate(25);
+        ->orderByDesc('date_commande');
+        if($this->query){
+            $datas = $datas->where('id_commande', 'like', '%'.$this->query.'%');
+        }
+        $datas = $datas->paginate(25);
 
         $reglements = Commande::where('client_id', $this->id_client)
         ->whereNull('date_reglement')
