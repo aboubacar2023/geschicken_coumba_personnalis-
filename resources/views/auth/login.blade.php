@@ -36,7 +36,7 @@
                             </div>
                         </div>
                         <div class="pt-3"><a href="{{route('register')}}" style="color: #821435">S'inscrire</a></div>
-                      </div>  
+                    </div>  
                 </form>
             </div>
         </div>

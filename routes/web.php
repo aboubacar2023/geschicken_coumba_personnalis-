@@ -50,9 +50,7 @@ Route::middleware(['auth', 'verified'])->get('/caisse', [CaisseController::class
 Route::middleware(['auth', 'verified'])->get('/activite-journaliere',[ActiviteJournaliereController::class, 'index'] )->name('activite-journaliere');
 
 // Les middlewares 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/activite-journaliere', [ActiviteJournaliereController::class, 'index'])->middleware(['auth', 'verified'])->name('activite-journaliere');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
