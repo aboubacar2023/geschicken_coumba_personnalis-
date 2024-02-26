@@ -34,7 +34,7 @@
                                 <th>Montant</th>
                                 <th>Reste Paiement</th>
                                 <th>Date Règlement</th>
-                                <th>Statut</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -58,10 +58,11 @@
                                     @else
                                         <td>---</td>
                                     @endif
-                                    @if ($reception->reglement)
-                                        <td><button class="btn td_fournisseur" style="background-color: green"></button></td> 
-                                    @else
-                                        <td><button class="btn td_fournisseur" style="background-color: red"></button></td> 
+                                    @if (!$reception->reglement)
+                                        <td>
+                                            <button type="button" wire:click="modificationReception({{$reception->id}})" class="btn btn-warning" style="color: white;" data-bs-toggle="modal" data-bs-target="#modificationModal" data-bs-whatever="@mdo"> <i class="fa-solid fa-pen-nib"></i></button>
+                                            <button type="button" wire:click="deleteReception({{$reception->id}})" wire:confirm="Êtes vous sûr de supprimer cette reception ?" class="btn" style="background-color: #821435; color: white"> <i class="fa-solid fa-trash"></i></button>
+                                        </td> 
                                     @endif
                                 </tr>
                             @endforeach

@@ -236,6 +236,16 @@ class IndivFournisseur extends Component
         
     }
 
+    public function modificationReception($id){
+        dd();
+    }
+
+    public function deleteReception($id){
+        dd();
+        Reception::where('id', $id)->delete();
+        return $this->redirectRoute('fournisseur.individuel', ['fournisseur_id' => $this->id_fournisseur]);
+    }
+
 
     public function render()
     {
