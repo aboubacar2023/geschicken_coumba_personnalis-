@@ -52,8 +52,8 @@ class Caisse extends Component
 
             $this->pertes = DB::table('stocks')
             ->join('problemes', 'stocks.id', '=', 'stock_id')
-            ->whereYear('created_at', $this->annee)
-            ->whereMonth('created_at', $this->mois)
+            ->whereYear('problemes.created_at', $this->annee)
+            ->whereMonth('problemes.created_at', $this->mois)
             ->where('type_probleme', 'avarie')
             ->select('type', DB::raw('SUM(quantite) as quantite'))
             ->groupBy('stocks.type')
@@ -61,8 +61,8 @@ class Caisse extends Component
 
             $this->manquants = DB::table('stocks')
             ->join('problemes', 'stocks.id', '=', 'stock_id')
-            ->whereYear('created_at', $this->annee)
-            ->whereMonth('created_at', $this->mois)
+            ->whereYear('problemes.created_at', $this->annee)
+            ->whereMonth('problemes.created_at', $this->mois)
             ->where('type_probleme', 'manquant')
             ->select('type', DB::raw('SUM(quantite) as quantite'))
             ->groupBy('stocks.type')
@@ -90,7 +90,7 @@ class Caisse extends Component
 
             $this->pertes = DB::table('stocks')
             ->join('problemes', 'stocks.id', '=', 'stock_id')
-            ->whereYear('created_at', $this->annee)
+            ->whereYear('problemes.created_at', $this->annee)
             ->where('type_probleme', 'avarie')
             ->select('type', DB::raw('SUM(quantite) as quantite'))
             ->groupBy('stocks.type')
@@ -98,7 +98,7 @@ class Caisse extends Component
 
             $this->manquants = DB::table('stocks')
             ->join('problemes', 'stocks.id', '=', 'stock_id')
-            ->whereYear('created_at', $this->annee)
+            ->whereYear('problemes.created_at', $this->annee)
             ->where('type_probleme', 'manquant')
             ->select('type', DB::raw('SUM(quantite) as quantite'))
             ->groupBy('stocks.type')

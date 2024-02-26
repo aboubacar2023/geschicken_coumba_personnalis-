@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('type');
             $table->double('quantite_stock');
-            $table->timestamp('updated_at');
+            $table->timestamps();
         });
     }
 

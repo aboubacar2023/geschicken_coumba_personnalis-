@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('type_caisse');
             $table->integer('somme_type');
-            $table->timestamp('updated_at');
+            $table->timestamps();
         });
     }
 
