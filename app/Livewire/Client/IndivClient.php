@@ -272,6 +272,11 @@ class IndivClient extends Component
             return $this->redirectRoute('client.individuel', ['id_client' => $this->id_client]);
     }
 
+    public function deleteCommande($id){
+        Commande::where('id', $id)->delete();
+        return $this->redirectRoute('client.individuel', ['id_client' => $this->id_client]);
+    }
+
     
     public function render()
     {

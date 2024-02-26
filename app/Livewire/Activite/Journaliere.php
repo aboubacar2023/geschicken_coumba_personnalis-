@@ -66,6 +66,15 @@ class Journaliere extends Component
         
         
     }
+
+    public function deleteDepense($id) {
+        $caisse_and_montant = Operation::select('montant_operation', 'caisse_id')->where('id', $id)->first();
+        dd($caisse_and_montant);
+        Caisse::where('id', $caisse_and_montant->caisse_id)->increment('somme_type', $caisse_and_montant->montant_operation);
+        Caisse::where('type_caisse', '_depense')->decrement('somme_type', $caisse_and_montant->montant_operation);
+        // Operation::where('id', $id)->delete();
+        return $this->redirectRoute('activite-journaliere');
+    }
     
     public function render()
     {

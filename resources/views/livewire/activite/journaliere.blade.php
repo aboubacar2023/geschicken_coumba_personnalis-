@@ -20,6 +20,7 @@
                                 <th>Source</th>
                                 <th>Motif</th>
                                 <th>Montant</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -31,6 +32,14 @@
                                     <td>{{ucfirst($type[1])}}</td>
                                     <td>{{ucfirst($operation->type_operation)}}</td>
                                     <td>{{number_format($operation->montant_operation, 0, '', ' ')}} FCFA</td>
+                                    <td>
+                                        @php
+                                            $data = ['salaire', 'virement', 'facture', 'prelevement', 'divers']
+                                        @endphp
+                                        @if (in_array( $operation->type_operation, $data) )
+                                            <button type="button" wire:click="deleteDepense({{$operation->id}})" wire:confirm="Êtes vous sûr de supprimer Opération ?" class="btn" style="background-color: #821435; color: white"><i class="fa-solid fa-trash"></i></button>
+                                        @endif
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>

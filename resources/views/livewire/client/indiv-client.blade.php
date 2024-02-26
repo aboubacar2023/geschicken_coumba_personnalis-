@@ -56,6 +56,9 @@
                                     @endif
                                     <td>
                                         <button type="button" wire:click="seeCommandeIndiv({{$data->id}})" class="btn btn-warning" style="color: white;" data-bs-toggle="modal" data-bs-target="#seeCommandeModal" data-bs-whatever="@mdo"><i class="fa-solid fa-eye"></i></button>
+                                        @if (!$data->date_reglement)
+                                            <button type="button" wire:click="deleteCommande({{$data->id}})" wire:confirm="Êtes vous sûr de supprimer cette Commande ?" class="btn" style="background-color: #821435; color: white"> <i class="fa-solid fa-trash"></i></button>
+                                        @endif
                                     </td>
                                     @if ($data->date_reglement)
                                         <td><button class="btn td_client" style="background-color: green"></button></td>  
