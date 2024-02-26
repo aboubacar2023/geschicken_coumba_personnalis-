@@ -58,7 +58,8 @@ class Journaliere extends Component
                 Operation::create([
                     'type_operation' => $this->motif, 
                     'montant_operation' => $validated['montant'],
-                    'caisse_id' => $id_depense
+                    'caisse_id' => $id_depense,
+                    'caisse_concerne' => $caisse->id
                 ]);
                 Caisse::where('id', $id_depense)->increment('somme_type', $validated['montant']);
                 return $this->redirectRoute('activite-journaliere');
@@ -68,12 +69,13 @@ class Journaliere extends Component
     }
 
     public function deleteDepense($id) {
-        $caisse_and_montant = Operation::select('montant_operation', 'caisse_id')->where('id', $id)->first();
-        dd($caisse_and_montant);
-        Caisse::where('id', $caisse_and_montant->caisse_id)->increment('somme_type', $caisse_and_montant->montant_operation);
+        $caisse_and_montant = Operation::select('montant_operation', 'caisse_concerne')->where('id', $id)->first();
+         
+        Caisse::where('id', $caisse_and_montant->caisse_concerne)->increment('somme_type', $caisse_and_montant->montant_operation);
         Caisse::where('type_caisse', '_depense')->decrement('somme_type', $caisse_and_montant->montant_operation);
-        // Operation::where('id', $id)->delete();
+        Operation::where('id', $id)->delete();
         return $this->redirectRoute('activite-journaliere');
+        
     }
     
     public function render()

@@ -13,6 +13,7 @@ class Operation extends Model
         'type_operation',
         'montant_operation',
         'caisse_id',
+        'caisse_concerne'
     ];
 
     public function caisse() : BelongsTo {

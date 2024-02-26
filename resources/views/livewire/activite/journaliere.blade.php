@@ -36,7 +36,7 @@
                                         @php
                                             $data = ['salaire', 'virement', 'facture', 'prelevement', 'divers']
                                         @endphp
-                                        @if (in_array( $operation->type_operation, $data) )
+                                        @if (in_array( $operation->type_operation, $data))
                                             <button type="button" wire:click="deleteDepense({{$operation->id}})" wire:confirm="Êtes vous sûr de supprimer Opération ?" class="btn" style="background-color: #821435; color: white"><i class="fa-solid fa-trash"></i></button>
                                         @endif
                                     </td>
