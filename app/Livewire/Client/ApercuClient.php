@@ -73,6 +73,7 @@ class ApercuClient extends Component
             $clients->where(function($query){
                 $query->where('prenom', 'like', "%{$this->query}%")
                 ->orWhere('nom', 'like', "%{$this->query}%")
+                ->orWhere('societe', 'like', "%{$this->query}%")
                 ->orWhere('contact', 'like', "%{$this->query}%");
             });
         }

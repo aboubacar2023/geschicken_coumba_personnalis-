@@ -102,6 +102,7 @@ class ApercuFournisseur extends Component
             $fournisseurs->where(function($query){
                 $query->where('prenom', 'like', "%{$this->query}%")
                 ->orWhere('nom', 'like', "%{$this->query}%")
+                ->orWhere('societe', 'like', "%{$this->query}%")
                 ->orWhere('contact', 'like', "%{$this->query}%");
             });
         } 
