@@ -16,6 +16,7 @@ return new class extends Migration
             $table->id();
             $table->string('type_operation');
             $table->integer('montant_operation');
+            $table->integer('caisse_concerne');
             $table->timestamps();
             $table->foreignIdFor(Caisse::class)->constrained()->cascadeOnDelete();
         });
