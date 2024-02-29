@@ -35,7 +35,7 @@
                                 <button type="submit" class="btn" style="background-color: #821435; color: white; width : 200px">Se Connecter</button>
                             </div>
                         </div>
-                        <div class="pt-3"><a href="{{route('register')}}" style="color: #821435">S'inscrire</a></div>
+                        {{-- <div class="pt-3"><a href="{{route('register')}}" style="color: #821435">S'inscrire</a></div> --}}
                     </div>  
                 </form>
             </div>

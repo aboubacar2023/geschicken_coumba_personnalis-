@@ -16,7 +16,8 @@ class Commande extends Model
         'date_commande',
         'montant_commande',
         'montant_non_regle_type',
-        'client_id'
+        'client_id',
+        'date_reglement'
     ];
 
     public function client() : BelongsTo {

@@ -62,40 +62,9 @@ class IndivFournisseur extends Component
     }
 
 
-    private function createStock() {
-        if ( Stock::all()->isEmpty()) {
-            Stock::insert([
-                [
-                    'type' => 'entier',
-                    'quantite_stock' => 0
-                ],
-                [
-                    'type' => 'blanc',
-                    'quantite_stock' => 0
-                ],
-                [
-                    'type' => 'cuisse',
-                    'quantite_stock' => 0
-                ],
-                [
-                    'type' => 'aile',
-                    'quantite_stock' => 0
-                ],
-                [
-                    'type' => 'carcasse',
-                    'quantite_stock' => 0
-                ],
-                [
-                    'type' => 'attieke',
-                    'quantite_stock' => 0
-                ],
-            ]);
-        }
-    }
 
     public function saveReception() {
 
-        $this->createStock();
 
         $validated = $this->validate();
             Reception::create([

@@ -120,10 +120,10 @@ class Caisse extends Component
         $dette_fournisseurs = Reception::where('reglement', false)->sum('montant_non_regle');
 
         // recuperation des années et mois depuis l'appli 
-        $this->year = Commande::selectRaw('YEAR(created_at) as year')->distinct()->whereNotNull('date_reglement')->get();
+        $this->year = Commande::selectRaw("strftime('%Y', created_at) as year")->distinct()->whereNotNull('date_reglement')->get();
 
         if ($this->annee) {
-            $this->month = Commande::selectRaw('MONTH(created_at) as month')->distinct()->whereYear('created_at', $this->annee)->get();
+            $this->month = Commande::selectRaw("strftime('%m', created_at) as month")->distinct()->whereYear('created_at', $this->annee)->get();
         }
 
         $investissements = Reception::sum('montant');

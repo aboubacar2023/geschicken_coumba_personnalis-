@@ -5,6 +5,7 @@ namespace App\Livewire\Fournisseur;
 use App\Events\FournisseurEvent;
 use App\Models\Caisse;
 use App\Models\Fournisseur;
+use App\Models\Stock;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Attributes\Validate;
@@ -29,7 +30,7 @@ class ApercuFournisseur extends Component
     public $query = '' ;
     public $id_fournisseur = '' ;
 
-    public function createCaisseAttribut(){
+    private function createCaisseAttribut() {
         Caisse::insert([
             [
                 'type_caisse' => 'somme_caisse',
@@ -46,9 +47,40 @@ class ApercuFournisseur extends Component
         ]);
     }
 
+    private function createStock() {
+        if ( Stock::all()->isEmpty()) {
+            Stock::insert([
+                [
+                    'type' => 'entier',
+                    'quantite_stock' => 0
+                ],
+                [
+                    'type' => 'blanc',
+                    'quantite_stock' => 0
+                ],
+                [
+                    'type' => 'cuisse',
+                    'quantite_stock' => 0
+                ],
+                [
+                    'type' => 'aile',
+                    'quantite_stock' => 0
+                ],
+                [
+                    'type' => 'carcasse',
+                    'quantite_stock' => 0
+                ],
+                [
+                    'type' => 'attieke',
+                    'quantite_stock' => 0
+                ],
+            ]);
+        }
+    }
+
     public function saveFournisseur(){
 
-        
+        $this->createStock();
         if (Caisse::all()->isEmpty()) {
             $this->createCaisseAttribut();
         }
