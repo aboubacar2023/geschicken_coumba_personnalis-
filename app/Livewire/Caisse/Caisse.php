@@ -113,6 +113,11 @@ class Caisse extends Component
 
     public function render()
     {
+        // Lors de la mise en place de l'application pour régulariser la caisse
+        // ModelsCaisse::where('type_caisse', 'somme_caisse')->update([
+        //     'somme_type' => 0
+        // ]);
+
         $dette_clients = Commande::whereNull('date_reglement')->sum('montant_non_regle_type');
 
         $ventes = Commande::whereNotNull('date_reglement')->sum('montant_commande');

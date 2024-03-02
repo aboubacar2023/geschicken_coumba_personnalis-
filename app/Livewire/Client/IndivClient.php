@@ -81,19 +81,12 @@ class IndivClient extends Component
                         Stock::where('type', $partie)->decrement('quantite_stock', $this->quantite[$key]);
                         $id_stock = Stock::where('type', $partie)->value('id');
                         $stock = Stock::find($id_stock);
-                        if ($partie === 'attieke') {
-                            $stock->commandes()->attach($commande->id, [
-                                'quantite_type' => $this->quantite[$key],
-                                'prix_unitaire_type' => $this->prix[$key],
-                                'montant_type' => $this->quantite[$key] * $this->prix[$key],
-                            ]);
-                        } else {
-                            $stock->commandes()->attach($commande->id, [
-                                'quantite_type' => $this->quantite[$key],
-                                'prix_unitaire_type' => $this->prix[$key],
-                                'montant_type' => $this->quantite[$key] * $this->prix[$key],
-                            ]);
-                        }
+                        
+                        $stock->commandes()->attach($commande->id, [
+                            'quantite_type' => $this->quantite[$key],
+                            'prix_unitaire_type' => $this->prix[$key],
+                            'montant_type' => $this->quantite[$key] * $this->prix[$key],
+                        ]);
                         
 
                     }
@@ -273,6 +266,11 @@ class IndivClient extends Component
     }
 
     public function deleteCommande($id){
+        $data = Commande::where('id', $id)->first();
+        // On regule le stock avant de supprimer la commande
+        foreach($data->stocks as $stock){
+            Stock::where('id', $stock->commande_stock->stock_id)->increment('quantite_stock', $stock->commande_stock->quantite_type);
+        }
         Commande::where('id', $id)->delete();
         return $this->redirectRoute('client.individuel', ['id_client' => $this->id_client]);
     }

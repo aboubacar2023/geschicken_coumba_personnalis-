@@ -64,11 +64,11 @@
                                     @else
                                         <td><button class="btn td_client" style="background-color: red"></button></td>
                                     @endif
-                                    @if (!$reception->reglement)
-                                        <td>
+                                    <td>
+                                        @if (!$reception->reglement)
                                             <button type="button" wire:click="deleteReception({{$reception->id}})" wire:confirm="Êtes vous sûr de supprimer cette reception ?" class="btn" style="background-color: #821435; color: white"> <i class="fa-solid fa-trash"></i></button>
-                                        </td> 
-                                    @endif
+                                        @endif
+                                    </td> 
                                 </tr>
                             @endforeach
                         </tbody>

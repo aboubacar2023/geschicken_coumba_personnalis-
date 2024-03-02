@@ -207,6 +207,8 @@ class IndivFournisseur extends Component
 
 
     public function deleteReception($id){
+        $data = Reception::where('id', $id)->first();
+        Stock::where('type', $data->type_produit)->decrement('quantite_stock', $data->quantite);    
         Reception::where('id', $id)->delete();
         return $this->redirectRoute('fournisseur.individuel', ['fournisseur_id' => $this->id_fournisseur]);
     }

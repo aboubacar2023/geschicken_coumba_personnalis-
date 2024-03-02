@@ -118,11 +118,14 @@ class Stock extends Component
     }
     public function render()
     {
+        // Lors de la mise en place de l'application pour régulariser le stock
         // ModelsStock::where('type', 'entier')->update(['quantite_stock' => 5000]);
         // ModelsStock::where('type', 'blanc')->update(['quantite_stock' => 5000]);
         // ModelsStock::where('type', 'cuisse')->update(['quantite_stock' => 5000]);
         // ModelsStock::where('type', 'aile')->update(['quantite_stock' => 5000]);
         // ModelsStock::where('type', 'carcasse')->update(['quantite_stock' => 5000]);
+
+
         $this->quantite_dispo = ModelsStock::where('type', 'entier')->value('quantite_stock');
         $stocks = ModelsStock::all();
         return view('livewire.stock.stock', [
