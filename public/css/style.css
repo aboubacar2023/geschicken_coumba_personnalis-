@@ -148,7 +148,7 @@ label{
     text-decoration: underline;
 }
 .entete_bilan {
-    font-size: 20px;
+    font-size: 10px;
     text-align: center;
     background-color: #821435;
     color: white;
@@ -315,3 +315,48 @@ label{
     height: 30px;
     width: 60px;
 }
+
+.loader_recherche {
+    position: fixed;
+    top: 45%;
+    left: 55%;
+    width: 65px;
+    height: 65px;
+    border: 5px solid;
+    border-radius: 50%;
+    border-color: #821435 transparent;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+} 
+.loader {
+    position: fixed;
+    top: 45%;
+    left: 47%;
+    width: 65px;
+    height: 65px;
+    border: 5px solid;
+    border-radius: 50%;
+    border-color: #821435 transparent;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+} 

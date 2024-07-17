@@ -1,12 +1,12 @@
 <div>
     <div class="cote-menu">
         <div class="nav-haut">
-            <div><h4 style="padding-left: 3px;"><i class="fa-solid fa-truck-arrow-right" style="padding-right: 7px"></i>fournisseur</h4></div>
+            <div><h4 style="padding-left: 3px;">Fournisseur</h4></div>
             <div style="padding-right: 10px;"><h5>DALLA DISTRIBUTIONS</h5></div>
         </div>
         <div class="contenu">
             <div>
-              <button type="button" class="btn" style="background-color: #821435; color: white;" data-bs-toggle="modal" data-bs-target="#nouveauModal" data-bs-whatever="@mdo" ><i class="fa-solid fa-user-plus icon"></i>Nouveau Fournisseur</button>
+              <button type="button" class="btn" style="background-color: #821435; color: white;" data-bs-toggle="modal" data-bs-target="#nouveauModal" data-bs-whatever="@mdo">Nouveau Fournisseur</button>
             </div>
             <h2>LES FOURNISSEURS</h2>
             <div class="tableau pt-4">
@@ -37,14 +37,15 @@
                                     <td>{{$fournisseur->adresse}}</td>
                                     <td>{{$fournisseur->contact}}</td>
                                     <td>
-                                        <button type="button" wire:click="updateFournisseur({{$fournisseur->id}})" class="btn btn-warning" style="color: white;" data-bs-toggle="modal" data-bs-target="#modificationModal" data-bs-whatever="@mdo"><i class="fa-solid fa-pen-nib"></i></button>
-                                        <button type="submit" class="btn" style="background-color: #821435; color: white;"><a href="{{route('fournisseur.individuel', ['fournisseur_id' => $fournisseur->id])}}"><i class="fa-solid fa-eye"></i></a></button>
+                                        <button type="button" wire:click="updateFournisseur({{$fournisseur->id}})" class="btn btn-warning" style="color: white;" data-bs-toggle="modal" data-bs-target="#modificationModal" data-bs-whatever="@mdo">Modifier</button>
+                                        <button type="submit" class="btn" style="background-color: #821435; color: white;"><a href="{{route('fournisseur.individuel', ['fournisseur_id' => $fournisseur->id])}}">Voir</a></button>
                                     </td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
                     {{ $fournisseurs->links() }}
+                    <span class="loader_recherche" wire:loading></span>
                 </div>
             </div>
         </div>

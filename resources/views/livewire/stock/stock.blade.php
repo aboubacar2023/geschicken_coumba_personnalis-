@@ -1,13 +1,13 @@
 <div>
     <div class="cote-menu">
         <div class="nav-haut">
-            <div><h4 style="padding-left: 3px;"><i class="fa-solid fa-boxes-packing" style="padding-right: 7px"></i>Stock</h4></div>
+            <div><h4 style="padding-left: 3px;">Stock</h4></div>
             <div style="padding-right: 10px;"><h5>DALLA DISTRIBUTIONS</h5></div>
         </div>
         <div class="contenu">
             <div>
-              <button type="button" class="btn" style="background-color: #821435; color: white;" data-bs-toggle="modal" data-bs-target="#extractionModal" data-bs-whatever="@mdo" ><i class="fa-solid fa-plus icon"></i>Extraction</button>
-              <button type="button" class="btn" style="background-color: #821435; color: white;" data-bs-toggle="modal" data-bs-target="#avarieModal" data-bs-whatever="@mdo" ><i class="fa-solid fa-right-from-bracket icon"></i>Retrait</button>
+              <button type="button" class="btn" style="background-color: #821435; color: white;" data-bs-toggle="modal" data-bs-target="#extractionModal" data-bs-whatever="@mdo" >Extraction</button>
+              <button type="button" class="btn" style="background-color: #821435; color: white;" data-bs-toggle="modal" data-bs-target="#avarieModal" data-bs-whatever="@mdo" >Retrait</button>
             </div>
             <h2>LE STOCK GLOBAL</h2>
             <div class="tableau pt-4">

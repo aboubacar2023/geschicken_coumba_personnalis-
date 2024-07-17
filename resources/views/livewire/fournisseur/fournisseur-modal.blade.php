@@ -9,7 +9,7 @@
         </div>
         <div class="modal-body">
             <div class="container-fluid">
-            <h3 class="entete_bilan">IDENTITE DU NOUVEAU FOURNISSEUR</h3>
+            <h4 class="entete_bilan">Identité du nouveau fournisseur</h4>
                 <div class="row">
                     <div class="col-md-6">
                         <label class="col-form-label">Prénom</label>
@@ -37,6 +37,7 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>
         <button type="submit" class="btn" style="background-color: #821435; color: white;">Enregistrer</button>
+        <span class="loader" wire:loading></span>
       </div>
     </form>
     </div>
@@ -56,7 +57,7 @@
         </div>
         <div class="modal-body">
             <div class="container-fluid">
-            <h3 class="entete_bilan">MODIFICATION DE L'IDENTITE DU Fournisseur</h3>
+            <h3 class="entete_bilan">Modification de l'identité du fournisseur</h3>
                 <div class="row">
                     <div class="col-md-6">
                         <label class="col-form-label">Prénom</label>
@@ -84,6 +85,7 @@
       <div class="modal-footer">
         <button type="button" wire:click="closeModal" class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>
         <button type="submit" class="btn" style="background-color: #821435; color: white;">Modifier</button>
+        <span class="loader" wire:loading></span>
       </div>
     </form>
     </div>

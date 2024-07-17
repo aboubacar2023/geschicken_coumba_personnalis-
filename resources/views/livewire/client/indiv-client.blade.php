@@ -1,14 +1,14 @@
 <div>
     <div class="cote-menu">
         <div class="nav-haut">
-            <div><h4 style="padding-left: 3px;"><i class="fa-solid fa-people-group" style="padding-right: 7px"></i>Client</h4></div>
+            <div><h4 style="padding-left: 3px;"></i>Client</h4></div>
             <div style="padding-right: 10px;"><h5>DALLA DISTRIBUTIONS</h5></div>
         </div>
         <div class="contenu">
             <div class="pb-4">
-                <button type="button" class="btn" style="background-color: #821435; color: white;"  ><a href="{{route('client.apercu')}}"><i class="fa-solid fa-delete-left icon"></i>Retour</a></button>
-                <button type="button" class="btn" style="background-color: #821435; color: white;" data-bs-toggle="modal" data-bs-target="#commandeModal" data-bs-whatever="@mdo" ><i class="fa-solid fa-plus icon"></i>Commande</button>
-                <button type="button" class="btn" style="background-color: #821435; color: white;" data-bs-toggle="modal" data-bs-target="#paiementModal" data-bs-whatever="@mdo" ><i class="fa-solid fa-money-check-dollar icon"></i>Paiement</button>
+                <button type="button" class="btn" style="background-color: #821435; color: white;"  ><a href="{{route('client.apercu')}}">Retour</a></button>
+                <button type="button" class="btn" style="background-color: #821435; color: white;" data-bs-toggle="modal" data-bs-target="#commandeModal" data-bs-whatever="@mdo" >Commande</button>
+                <button type="button" class="btn" style="background-color: #821435; color: white;" data-bs-toggle="modal" data-bs-target="#paiementModal" data-bs-whatever="@mdo" >Paiement</button>
             </div>
             
             <h2>Le Client {{$client->prenom}} {{$client->nom}}</h2>
@@ -55,9 +55,9 @@
                                         <td>---</td>
                                     @endif
                                     <td>
-                                        <button type="button" wire:click="seeCommandeIndiv({{$data->id}})" class="btn btn-warning" style="color: white;" data-bs-toggle="modal" data-bs-target="#seeCommandeModal" data-bs-whatever="@mdo"><i class="fa-solid fa-eye"></i></button>
+                                        <button type="button" wire:click="seeCommandeIndiv({{$data->id}})" class="btn btn-warning" style="color: white;" data-bs-toggle="modal" data-bs-target="#seeCommandeModal" data-bs-whatever="@mdo">Voir</i></button>
                                         @if (!$data->date_reglement)
-                                            <button type="button" wire:click="deleteCommande({{$data->id}})" wire:confirm="Êtes vous sûr de supprimer cette Commande ?" class="btn" style="background-color: #821435; color: white"> <i class="fa-solid fa-trash"></i></button>
+                                            <button type="button" wire:click="deleteCommande({{$data->id}})" wire:confirm="Êtes vous sûr de supprimer cette Commande ?" class="btn" style="background-color: #821435; color: white">Supprimer</button>
                                         @endif
                                     </td>
                                     @if ($data->date_reglement)

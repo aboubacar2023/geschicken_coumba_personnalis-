@@ -25,17 +25,17 @@
                     <div class="col-md-6">
                         <label class="col-form-label">Quantité en KG</label>
                         <input type="text" class="form-control @error('quantite') is-invalid @enderror" wire:model="quantite" required>
-                        <div class="erreur">@error('quantite') {{$message}}@enderror</div>
+                        <div style="color: #821435">@error('quantite') {{$message}}@enderror</div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6"> 
                         <label class="col-form-label">Prix Unitaire en FCFA</label>
                         <input type="text" class="form-control @error('prix_unitaire') is-invalid @enderror" wire:model="prix_unitaire" required>
-                        <div class="erreur">@error('prix_unitaire') {{$message}}@enderror</div>
+                        <div style="color: #821435">@error('prix_unitaire') {{$message}}@enderror</div>
                     </div>
                     <div class="col-md-6">
                       <label class="col-form-label">ID reception</label>
                       <input type="text" class="form-control" wire:model="id_reception" required>
-                      <div class="erreur">@error('id_reception') {{$message}}@enderror</div>
+                      <div style="color: #821435">@error('id_reception') {{$message}}@enderror</div>
                     </div>
                     <div class="col-md-6">
                       <label class="col-form-label">Date Reception</label>
@@ -54,6 +54,7 @@
       <div class="modal-footer">
         <button type="button" wire:click="closeModal" class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>
         <button type="submit" class="btn" style="background-color: #821435; color: white;">Valider</button>
+        <span class="loader" wire:loading></span>
       </div>
     </form>
     </div>
@@ -123,6 +124,7 @@
       <div class="modal-footer">
         <button type="button" wire:click="closeModal" class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>
         <button type="submit" class="btn" style="background-color: #821435; color: white;">Régler</button>
+        <span class="loader" wire:loading></span>
       </div>
     </form>
     </div>

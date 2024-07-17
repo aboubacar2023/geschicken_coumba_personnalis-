@@ -1,14 +1,14 @@
 <div>
     <div class="cote-menu">
         <div class="nav-haut">
-            <div><h4 style="padding-left: 3px;"><i class="fa-solid fa-truck-arrow-right" style="padding-right: 7px"></i>fournisseur</h4></div>
+            <div><h4 style="padding-left: 3px;">Fournisseur</h4></div>
             <div style="padding-right: 10px;"><h5>DALLA DISTRIBUTIONS</h5></div>
         </div>
         <div class="contenu">
             <div class="pb-3">
-                <button type="button" class="btn" style="background-color: #821435; color: white;"  ><a href="{{route('fournisseur.apercu')}}"><i class="fa-solid fa-delete-left icon"></i>Retour</a></button>
-                <button type="button" class="btn" style="background-color: #821435; color: white;" data-bs-toggle="modal" data-bs-target="#receptionModal" data-bs-whatever="@mdo" ><i class="fa-solid fa-plus icon"></i>Reception</button>
-                <button type="button" class="btn" style="background-color: #821435; color: white;" data-bs-toggle="modal" data-bs-target="#reglementModal" data-bs-whatever="@mdo" ><i class="fa-solid fa-hand-holding-dollar icon"></i>Règlement</button>
+                <button type="button" class="btn" style="background-color: #821435; color: white;"  ><a href="{{route('fournisseur.apercu')}}">Retour</a></button>
+                <button type="button" class="btn" style="background-color: #821435; color: white;" data-bs-toggle="modal" data-bs-target="#receptionModal" data-bs-whatever="@mdo" >Reception</button>
+                <button type="button" class="btn" style="background-color: #821435; color: white;" data-bs-toggle="modal" data-bs-target="#reglementModal" data-bs-whatever="@mdo" >Règlement</button>
             </div>
             <h2>Le Fournisseur {{$fournisseur->prenom}} {{$fournisseur->nom}}</h2>
             <div class="col-md-3">
@@ -66,7 +66,7 @@
                                     @endif
                                     <td>
                                         @if (!$reception->reglement)
-                                            <button type="button" wire:click="deleteReception({{$reception->id}})" wire:confirm="Êtes vous sûr de supprimer cette reception ?" class="btn" style="background-color: #821435; color: white"> <i class="fa-solid fa-trash"></i></button>
+                                            <button type="button" wire:click="deleteReception({{$reception->id}})" wire:confirm="Êtes vous sûr de supprimer cette reception ?" class="btn" style="background-color: #821435; color: white">Supprimer</button>
                                         @endif
                                     </td> 
                                 </tr>
@@ -74,6 +74,7 @@
                         </tbody>
                     </table>
                     {{ $receptions->links() }}
+                    <span class="loader_recherche" wire:loading></span>
                 </div>
             </div>
         </div>

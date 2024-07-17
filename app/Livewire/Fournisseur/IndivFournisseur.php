@@ -31,7 +31,7 @@ class IndivFournisseur extends Component
 
     public $date_reglement = '';
     
-    #[Validate('required')]
+    #[Validate('required', message: 'Veuillez saisir un ID')]
     public $id_reception = '';
 
     public $reglement_effectif = '';

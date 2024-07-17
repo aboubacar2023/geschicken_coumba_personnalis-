@@ -1,12 +1,12 @@
 <div>
     <div class="cote-menu">
         <div class="nav-haut">
-            <div><h4 style="padding-left: 3px;"><i class="fa-regular fa-calendar-days" style="padding-right: 7px"></i>Activités du Jour</h4></div>
+            <div><h4 style="padding-left: 3px;">Activités du Jour</h4></div>
             <div style="padding-right: 10px;"><h5>DALLA DISTRIBUTIONS</h5></div>
         </div>
         <div class="contenu">
             <div class="pb-4">
-                <button type="button" class="btn" style="background-color: #821435; color: white;" data-bs-toggle="modal" data-bs-target="#depenseModal" data-bs-whatever="@mdo" ><i class="fa-solid fa-money-check-dollar icon"></i>Opération</button>
+                <button type="button" class="btn" style="background-color: #821435; color: white;" data-bs-toggle="modal" data-bs-target="#depenseModal" data-bs-whatever="@mdo" >Opération</button>
                 {{-- <button type="button" class="btn" style="background-color: #821435; color: white;" data-bs-toggle="modal" data-bs-target="#encaissementModal" data-bs-whatever="@mdo" ><i class="fa-solid fa-hand-holding-dollar icon"></i>Encaissement</button> --}}
             </div>
             <div class="tableau pt-4">
@@ -37,7 +37,7 @@
                                             $data = ['salaire', 'virement', 'facture', 'prelevement', 'divers']
                                         @endphp
                                         @if (in_array( $operation->type_operation, $data))
-                                            <button type="button" wire:click="deleteDepense({{$operation->id}})" wire:confirm="Êtes vous sûr de supprimer Opération ?" class="btn" style="background-color: #821435; color: white"><i class="fa-solid fa-trash"></i></button>
+                                            <button type="button" wire:click="deleteDepense({{$operation->id}})" wire:confirm="Êtes vous sûr de supprimer Opération ?" class="btn" style="background-color: #821435; color: white">Supprimer</button>
                                         @endif
                                     </td>
                                 </tr>

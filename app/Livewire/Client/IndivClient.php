@@ -99,7 +99,7 @@ class IndivClient extends Component
     // Methode pour voir les autres champs du formulaire quand on clique sur activation ou si les données saisies sont correctes
 
     public function remplissageChamps() {
-        $this->reset('parties', 'prix', 'quantite', 'quantite_dispo');
+        $this->reset('parties', 'prix', 'quantite', 'quantite_dispo', 'message_erreur');
         $composants = ['entier', 'blanc', 'cuisse', 'aile', 'carcasse', 'attieke'];
         foreach($composants as $composant){
             if ($this->{$composant}) {

@@ -37,6 +37,7 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>
         <button type="submit" class="btn" style="background-color: #821435; color: white;">Enregistrer</button>
+        <span class="loader" wire:loading></span>
       </div>
     </form>
     </div>
@@ -84,6 +85,7 @@
       <div class="modal-footer">
         <button type="button" wire:click="closeModal" class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>
         <button type="submit" class="btn" style="background-color: #821435; color: white;">Modifier</button>
+        <span class="loader" wire:loading></span>
       </div>
     </form>
     </div>

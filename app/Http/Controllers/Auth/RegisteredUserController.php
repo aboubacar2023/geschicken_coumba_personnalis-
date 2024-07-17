@@ -34,18 +34,25 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'niveau' => ['required'],
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'niveau' => $request->niveau
         ]);
 
         event(new Registered($user));
 
         Auth::login($user);
+        if ($request->niveau === 'admin') {
+            return redirect('/activite-journaliere');
+        } else {
+            return redirect(route('fournisseur.apercu'));
+        }
+        
 
-        return redirect('/activite-journaliere');
     }
 }
