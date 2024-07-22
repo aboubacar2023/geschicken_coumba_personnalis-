@@ -59,6 +59,9 @@
                             <div class="col-md-6">
                                 <label class="col-form-label">ID commande</label>
                                 <input type="text" class="form-control" wire:model="id_identifiant_commande" required>
+                                @if ($message_identifiant)
+                                    <div style="color: #821435;">{{$message_identifiant}}</div>
+                                @endif
                             </div>
                             <div class="col-md-6">
                                 <label class="col-form-label">Date Commande</label>

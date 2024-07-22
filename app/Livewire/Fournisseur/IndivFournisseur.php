@@ -38,6 +38,8 @@ class IndivFournisseur extends Component
 
     public $montant = 0;
 
+    public $message_identifiant = '';
+
     // Le montant à payer quand il opte pour le mode de paiement en avance, genre il regle pas totalement les
     // dettes, mais il paye une somme pour diminuer les dettes
     public $montant_paye ;
@@ -64,9 +66,14 @@ class IndivFournisseur extends Component
 
 
     public function saveReception() {
+        $this->reset('message_identifiant');
 
-
+        // On verifie si l'id reception n'existe pas pour ce donneur 
         $validated = $this->validate();
+        $verification = Reception::where('fournisseur_id', $this->id_fournisseur)
+        ->where('id_reception', $validated['id_reception'])
+        ->get();
+        if ($verification->isEmpty()) {
             Reception::create([
                 'id_reception' => $validated['id_reception'],
                 'quantite' => $validated['quantite'],
@@ -79,10 +86,14 @@ class IndivFournisseur extends Component
             ]); 
         
             Stock::where('type', $validated['type_depot'] )->increment('quantite_stock', $validated['quantite']);
+            
+    
+    
+            return $this->redirectRoute('fournisseur.individuel', ['fournisseur_id' => $this->id_fournisseur]);
+        } else {
+            $this->message_identifiant ='Cet identifiant existe déjà pour ce fournisseur';
+        }
         
-
-
-        return $this->redirectRoute('fournisseur.individuel', ['fournisseur_id' => $this->id_fournisseur]);
     }
 
     public function montantFinal(){
@@ -218,7 +229,7 @@ class IndivFournisseur extends Component
     {
         $fournisseur  = Fournisseur::find($this->id_fournisseur);
 
-        $receptions = Reception::where('fournisseur_id',$this->id_fournisseur)->orderByDesc('date_reception');
+        $receptions = Reception::where('fournisseur_id',$this->id_fournisseur)->orderByDesc('created_at');
 
         if ($this->query) {
             $receptions = $receptions->where('id_reception', 'like', '%'.$this->query.'%');

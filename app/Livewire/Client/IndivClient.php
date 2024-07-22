@@ -33,6 +33,8 @@ class IndivClient extends Component
 
     public $message_erreur = '';
     // Ajout
+
+    public $message_identifiant = '';
     public $date_reglement = '';
     // La date de la commande 
     public $date_commande = '';
@@ -64,36 +66,44 @@ class IndivClient extends Component
     }
 
     public function saveCommande() {
-        if ($this->activation && !empty($this->parties)) {
-                $verif = $this->montantTotal() ;
-                if ($verif) {
-                    $commande = Commande::create([
-                        'id_commande' => $this->id_identifiant_commande,
-                        'client_id' => $this->id_client,
-                        'date_commande' => $this->date_commande,
-                        'montant_commande' => $this->prix_total,
-                        'montant_non_regle_type' => $this->prix_total
-                    ]);
-
-                    foreach($this->parties as $key => $partie){
-                        
-                        // decrementation du stock avant l'insertion des ids de la commande et stocks dans la table intermediare
-                        Stock::where('type', $partie)->decrement('quantite_stock', $this->quantite[$key]);
-                        $id_stock = Stock::where('type', $partie)->value('id');
-                        $stock = Stock::find($id_stock);
-                        
-                        $stock->commandes()->attach($commande->id, [
-                            'quantite_type' => $this->quantite[$key],
-                            'prix_unitaire_type' => $this->prix[$key],
-                            'montant_type' => $this->quantite[$key] * $this->prix[$key],
+        // On verifie si l'identifiant n'existe pas déja pour ce client
+        $verif = Commande::where('client_id', $this->id_client)
+            ->where('id_commande', $this->id_identifiant_commande)->get();
+        if ($verif->isEmpty()) {
+            if ($this->activation && !empty($this->parties)) {
+                    $verif = $this->montantTotal() ;
+                    if ($verif) {
+                        $commande = Commande::create([
+                            'id_commande' => $this->id_identifiant_commande,
+                            'client_id' => $this->id_client,
+                            'date_commande' => $this->date_commande,
+                            'montant_commande' => $this->prix_total,
+                            'montant_non_regle_type' => $this->prix_total
                         ]);
-                        
-
+    
+                        foreach($this->parties as $key => $partie){
+                            
+                            // decrementation du stock avant l'insertion des ids de la commande et stocks dans la table intermediare
+                            Stock::where('type', $partie)->decrement('quantite_stock', $this->quantite[$key]);
+                            $id_stock = Stock::where('type', $partie)->value('id');
+                            $stock = Stock::find($id_stock);
+                            
+                            $stock->commandes()->attach($commande->id, [
+                                'quantite_type' => $this->quantite[$key],
+                                'prix_unitaire_type' => $this->prix[$key],
+                                'montant_type' => $this->quantite[$key] * $this->prix[$key],
+                            ]);
+                            
+    
+                        }
+    
+                        return $this->redirectRoute('client.individuel', ['id_client' => $this->id_client]);
                     }
-
-                    return $this->redirectRoute('client.individuel', ['id_client' => $this->id_client]);
-                }
+            }
+        } else {
+            $this->message_identifiant = "Cet identifiant existe déjà pour ce client";
         }
+        
     }
 
     // Methode pour voir les autres champs du formulaire quand on clique sur activation ou si les données saisies sont correctes
@@ -279,7 +289,7 @@ class IndivClient extends Component
     public function render()
     {
         $datas = Commande::where('client_id', $this->id_client)
-        ->orderByDesc('date_commande');
+        ->orderByDesc('created_at');
         if($this->query){
             $datas = $datas->where('id_commande', 'like', '%'.$this->query.'%');
         }

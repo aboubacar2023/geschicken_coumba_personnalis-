@@ -36,6 +36,9 @@ body{
     display: flex;
     flex-direction: row;
 }
+.conteneur .menu .lien {
+    margin-left: 5px;
+}
 .conteneur .menu .lien:hover {
     color: rgb(255, 255, 255);
     transition: .5s;
@@ -148,7 +151,7 @@ label{
     text-decoration: underline;
 }
 .entete_bilan {
-    font-size: 10px;
+    font-size: 20px;
     text-align: center;
     background-color: #821435;
     color: white;
@@ -166,6 +169,8 @@ label{
     color: rgb(255, 255, 255);
     transition: .5s;
     padding-left: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
     border: white;
     background-color: #821435;
     border-radius: 5px;
@@ -288,7 +293,7 @@ label{
     font-weight: 600;
 }
 .lien_deconnect{
-    margin-left: -15px;
+    margin-left: 0px;
     margin-top: -5px;
 }
 .lien_deconnect:hover{

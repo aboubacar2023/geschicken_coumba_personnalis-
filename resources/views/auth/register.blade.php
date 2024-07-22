@@ -19,8 +19,9 @@
         <div class="mt-4">
             <x-input-label for="niveau" :value="__('Niveau')" />
             <select id="niveau" class="block mt-1 w-full" name="niveau" required>
-                <option value="admin">Admin</option>
-                <option value="user">User</option>
+                <option value=""></option>
+                <option value="user">Utilisateur Simple</option>
+                <option value="admin">Administrateur</option>
             </select>
             <x-input-error :messages="$errors->get('niveau')" class="mt-2" />
         </div>        

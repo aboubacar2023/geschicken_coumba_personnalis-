@@ -36,6 +36,9 @@
                       <label class="col-form-label">ID reception</label>
                       <input type="text" class="form-control" wire:model="id_reception" required>
                       <div style="color: #821435">@error('id_reception') {{$message}}@enderror</div>
+                      @if ($message_identifiant)
+                          <div style="color: #821435">{{$message_identifiant}}</div>
+                      @endif
                     </div>
                     <div class="col-md-6">
                       <label class="col-form-label">Date Reception</label>
