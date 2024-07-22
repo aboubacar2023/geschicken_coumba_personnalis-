@@ -17,7 +17,7 @@
             $niveau = Auth::user()->niveau;
           @endphp
             <nav>
-                <div class="image" style="padding-bottom: 10px"><img src="{{asset('image/geschicken.jpg')}}" height="170" width="160" alt=""></div>
+                <div class="image" ><img src="{{asset('image/geschicken.jpg')}}" height="170" width="160" alt=""></div>
                 <ul>
                   @if ($niveau === 'admin')
                     <li>
