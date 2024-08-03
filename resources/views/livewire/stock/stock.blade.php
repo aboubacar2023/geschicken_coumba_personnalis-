@@ -6,8 +6,13 @@
         </div>
         <div class="contenu">
             <div>
-              <button type="button" class="btn" style="background-color: #821435; color: white;" data-bs-toggle="modal" data-bs-target="#extractionModal" data-bs-whatever="@mdo" >Extraction</button>
-              <button type="button" class="btn" style="background-color: #821435; color: white;" data-bs-toggle="modal" data-bs-target="#avarieModal" data-bs-whatever="@mdo" >Retrait</button>
+                @php
+                    $niveau = Auth::user()->niveau;
+                @endphp
+                @if ($niveau === 'admin')
+                    <button type="button" class="btn" style="background-color: #821435; color: white;" data-bs-toggle="modal" data-bs-target="#extractionModal" data-bs-whatever="@mdo" >Extraction</button>
+                    <button type="button" class="btn" style="background-color: #821435; color: white;" data-bs-toggle="modal" data-bs-target="#avarieModal" data-bs-whatever="@mdo" >Retrait</button>
+                @endif
             </div>
             <h2>LE STOCK GLOBAL</h2>
             <div class="tableau pt-4">
