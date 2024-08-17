@@ -215,3 +215,26 @@
     </div>
   </div>
 </div>
+{{-- Suppression d'une commande --}}
+<div wire:ignore.self class="modal fade" id="supressionModal" tabindex="-1" aria-labelledby="supressionModalLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-l">
+      <div class="modal-content">
+        <form wire:submit="saveDeleteCommande">
+          @csrf 
+          <div class="modal-header">
+          <h1 class="modal-title fs-5" id="supressionModalLabel">Suppression Commande</h1>
+          <button type="button" wire:click="closeModalSuppression" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="container-fluid">
+              <h5>Êtes vous sûr de supprimer cette commande ?</h5>
+            </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" wire:click="closeModalSuppression" class="btn btn-secondary" data-bs-dismiss="modal">Non</button>
+        <button type="submit" class="btn" style="background-color: #821435; color: white;">Oui</button>
+      </div>
+    </form>
+    </div>
+  </div>
+  </div>

@@ -51,6 +51,9 @@ class IndivFournisseur extends Component
 
     public $montant_insuffisant = '';
 
+    public $id_reception_a_supprimer = '';
+    public $message_suppression = '';
+
     public function rules() {
         return [
             'montant_paye' => $this->type_paiement === 'somme' ? 'required|numeric|gt:1' : '',
@@ -218,10 +221,22 @@ class IndivFournisseur extends Component
 
 
     public function deleteReception($id){
-        $data = Reception::where('id', $id)->first();
-        Stock::where('type', $data->type_produit)->decrement('quantite_stock', $data->quantite);    
-        Reception::where('id', $id)->delete();
-        return $this->redirectRoute('fournisseur.individuel', ['fournisseur_id' => $this->id_fournisseur]);
+        $this->id_reception_a_supprimer = $id;
+    }
+
+    public function saveDeleteReception() {
+        $data = Reception::where('id', $this->id_reception_a_supprimer)->first();
+        if ($data->quantite <= Stock::where('type', $data->type_produit)->value('quantite_stock')) {
+            Stock::where('type', $data->type_produit)->decrement('quantite_stock', $data->quantite);    
+            Reception::where('id', $this->id_reception_a_supprimer)->delete();
+            return $this->redirectRoute('fournisseur.individuel', ['fournisseur_id' => $this->id_fournisseur]);
+        }else {
+            $this->message_suppression = 'La quantité dans le stock ne permet pas cette suppression !!!';
+        }
+    }
+
+    public function closeModalSuppression(){
+        $this->reset('message_suppression', 'id_reception_a_supprimer');
     }
 
 

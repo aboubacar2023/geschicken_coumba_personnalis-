@@ -53,6 +53,9 @@ class IndivClient extends Component
     
     public $mode_paiement = '';
 
+    public $id_commande_a_supprimer = '';
+
+
     public function rules() {
         return [
             'montant_paye' => $this->type_paiement === 'somme' ? 'required|numeric|gt:1' : '',
@@ -276,14 +279,22 @@ class IndivClient extends Component
     }
 
     public function deleteCommande($id){
-        $data = Commande::where('id', $id)->first();
+        $this->id_commande_a_supprimer = $id;
+    }
+    public function saveDeleteCommande(){
+        $data = Commande::where('id', $this->id_commande_a_supprimer)->first();
         // On regule le stock avant de supprimer la commande
         foreach($data->stocks as $stock){
             Stock::where('id', $stock->commande_stock->stock_id)->increment('quantite_stock', $stock->commande_stock->quantite_type);
         }
-        Commande::where('id', $id)->delete();
+        Commande::where('id', $this->id_commande_a_supprimer)->delete();
         return $this->redirectRoute('client.individuel', ['id_client' => $this->id_client]);
     }
+
+    public function closeModalSuppression(){
+        $this->reset('id_commande_a_supprimer');
+    }
+
 
     
     public function render()

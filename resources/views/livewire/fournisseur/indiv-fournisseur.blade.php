@@ -66,7 +66,7 @@
                                     @endif
                                     <td>
                                         @if (!$reception->reglement)
-                                            <button type="button" wire:click="deleteReception({{$reception->id}})" wire:confirm="Êtes vous sûr de supprimer cette reception ?" class="btn" style="background-color: #821435; color: white">Supprimer</button>
+                                            <button type="button" wire:click="deleteReception({{$reception->id}})" class="btn" style="background-color: #821435; color: white" data-bs-toggle="modal" data-bs-target="#supressionModal" data-bs-whatever="@mdo">Supprimer</button>
                                         @endif
                                     </td> 
                                 </tr>
