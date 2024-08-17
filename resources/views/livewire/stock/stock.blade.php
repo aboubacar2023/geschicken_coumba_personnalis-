@@ -12,7 +12,7 @@
                 @if ($niveau === 'admin')
                     <button type="button" class="btn" style="background-color: #821435; color: white;" data-bs-toggle="modal" data-bs-target="#extractionModal" data-bs-whatever="@mdo" >Extraction</button>
                     <button type="button" class="btn" style="background-color: #821435; color: white;" data-bs-toggle="modal" data-bs-target="#avarieModal" data-bs-whatever="@mdo" >Retrait</button>
-                    <button type="button" class="btn" style="background-color: #821435; color: white;" data-bs-toggle="modal" data-bs-target="#regulationModal" data-bs-whatever="@mdo" >réguler le stock</button>
+                    <button type="button" class="btn" style="background-color: #821435; color: white;" data-bs-toggle="modal" data-bs-target="#regulationModal" data-bs-whatever="@mdo" >Réguler le stock</button>
                 @endif
             </div>
             <h2>LE STOCK GLOBAL</h2>
