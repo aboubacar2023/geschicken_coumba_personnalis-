@@ -108,3 +108,56 @@
   </div>
 </div>
 </div>
+
+{{-- régulation --}}
+
+<div wire:ignore.self class="modal fade" id="regulationModal" tabindex="-1" aria-labelledby="regulationModalLabel" aria-hidden="true" data-bs-backdrop="static">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <form wire:submit="saveRegulation">
+        @csrf
+        <div class="modal-header">
+        <h1 class="modal-title fs-5" id="regulationModalLabel">Régulation du Stock</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <div class="container-fluid">
+          <h3 class="entete_bilan">Renseignez les informations suivantes : </h3>
+          <div class="row"> 
+              <div class="col-md-6">
+                  <label class="col-form-label">Quantité Entier</label>
+                  <input type="text" class="form-control" wire:model="entier" required>
+                  <div class="erreur">@error('entier') {{$message}}@enderror</div>
+              </div>
+              <div class="col-md-6">
+                  <label class="col-form-label">Blanc</label>
+                  <input type="text" class="form-control" wire:model="blanc" required>
+                  <div class="erreur">@error('blanc') {{$message}}@enderror</div>
+              </div>
+              <div class="col-md-6">
+                  <label class="col-form-label">Cuisse</label>
+                  <input type="text" class="form-control" wire:model="cuisse" required>
+                  <div class="erreur">@error('cuisse') {{$message}}@enderror</div>
+              </div>
+              <div class="col-md-6">
+                  <label class="col-form-label">Aile</label>
+                  <input type="text" class="form-control" wire:model="aile" required>
+                  <div class="erreur">@error('aile') {{$message}}@enderror</div>
+              </div>
+              <div class="col-md-6">
+                  <label class="col-form-label">Carcasse</label>
+                  <input type="text" class="form-control" wire:model="carcasse" required>
+                  <div class="erreur">@error('carcasse') {{$message}}@enderror</div>
+              </div>
+          </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>
+      <button type="submit" class="btn" style="background-color: #821435; color: white;">Enregistrer</button>
+      <span class="loader" wire:loading></span>
+    </div>
+  </form>
+  </div>
+</div>
+</div>
